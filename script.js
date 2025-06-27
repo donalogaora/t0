@@ -96,42 +96,41 @@ const orderButtons = document.querySelectorAll('.shop-order-button');
 orderButtons.forEach(orderButton => {
     orderButton.addEventListener('click', function () {
         const product = orderButton.getAttribute('data-product') || '3D Printed Phone Stand';
-        const colorFromButton = orderButton.getAttribute('data-color');
-        const color = colorFromButton || selectedColor;
+        const price = 6.95; // Matches what the cart expects
+        const color = selectedColor;
 
         if (!color) {
             alert('Please select a color first!');
             return;
         }
 
-        // Optional: define product-specific price
-        const price = '€6.95';
+        const imagePath = `/assets/shop/phonestand_${color}.webp`; // Match your preview naming convention
 
-        // Build cart item
         const cartItem = {
-            product,
-            color,
-            price,
-            quantity: 1
+            name: product,
+            color: color,
+            price: price,
+            qty: 1,
+            image: imagePath
         };
 
-        // Load existing cart from localStorage or initialize
+        // Load existing cart from localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Check if item already exists in cart (same product + color)
-        const existingIndex = cart.findIndex(item => item.product === product && item.color === color);
+        // Check if same item already exists
+        const existingIndex = cart.findIndex(item => item.name === product && item.color === color);
 
         if (existingIndex > -1) {
-            cart[existingIndex].quantity += 1;
+            cart[existingIndex].qty += 1;
         } else {
             cart.push(cartItem);
         }
 
-        // Save cart back to localStorage
+        // Save back to localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Feedback
-        alert(`${product} (${color}) added to cart.`);
+        // Optional: User feedback
+        alert(`${product} (${color}) added to cart!`);
     });
 });
 
