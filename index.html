@@ -180,69 +180,6 @@
     </button>
   </div>  
   <br><br><br><br>
-  <div id="products"></div>
-  
-  <script>
-    // Example products data with colors, prices, images
-    const products = [
-      { id: '1', name: 'T-Shirt', colors: ['Black', 'White'], price: 20, image: 'https://via.placeholder.com/80' },
-      { id: '2', name: 'Hat', colors: ['Blue', 'Red'], price: 15, image: 'https://via.placeholder.com/80' },
-      { id: '3', name: 'Mug', colors: ['White'], price: 10, image: 'https://via.placeholder.com/80' }
-    ];
-  
-    const productsContainer = document.getElementById('products');
-  
-    // Render products with color selector and add button
-    products.forEach(product => {
-      const colorsOptions = product.colors.map(color => `<option value="${color}">${color}</option>`).join('');
-      const productHTML = `
-        <div style="border:1px solid #ccc; padding:1rem; margin-bottom:1rem; max-width: 300px;">
-          <img src="${product.image}" alt="${product.name}" style="width:80px; height:80px; object-fit:cover;" />
-          <h3>${product.name}</h3>
-          <p>Price: $${product.price.toFixed(2)}</p>
-          <label for="color-${product.id}">Color:</label>
-          <select id="color-${product.id}">
-            ${colorsOptions}
-          </select>
-          <br /><br />
-          <button onclick="addToCart('${product.id}')">Add to Cart</button>
-        </div>
-      `;
-      productsContainer.insertAdjacentHTML('beforeend', productHTML);
-    });
-  
-    // Add to cart function
-    function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      const colorSelect = document.getElementById(`color-${productId}`);
-      const selectedColor = colorSelect.value;
-  
-      // Get existing cart or empty array
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  
-      // Check if this product with this color is already in cart
-      const existingIndex = cart.findIndex(item => item.id === productId && item.color === selectedColor);
-      if (existingIndex > -1) {
-        // Increase qty
-        cart[existingIndex].qty++;
-      } else {
-        // Add new item
-        cart.push({
-          id: product.id,
-          name: product.name,
-          color: selectedColor,
-          price: product.price,
-          qty: 1,
-          image: product.image
-        });
-      }
-  
-      // Save cart back to localStorage
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert(`${product.name} (${selectedColor}) added to cart!`);
-    }
-  </script>
-  <br><br><br><br>
   <br><br>
   <tandcfooter>
      <span class="footer-text">shop.donalogaora.com </span>
