@@ -64,58 +64,6 @@ function startSoapCradleCarousel() {
 startPhoneStandCarousel();
 startSoapCradleCarousel();
 
-// Define delivery and in-person links for each color
-const paymentLinks = {
-    black: {
-        delivery: "https://www.paypal.com/ncp/payment/G3UNG7URVGTSY",
-        inperson: "https://www.paypal.com/ncp/payment/VHL6BB6NFB5R8"
-    },
-    white: {
-        delivery: "https://www.paypal.com/ncp/payment/YDUY83NNRPYZE",
-        inperson: "https://www.paypal.com/ncp/payment/6XWV77VL9NZXC"
-    },
-    space_grey: {
-        delivery: "https://www.paypal.com/ncp/payment/JG62G4S9BN9F6",
-        inperson: "https://www.paypal.com/ncp/payment/A7J7T4JGBRKT6"
-    },
-    blue: {
-        delivery: "https://www.paypal.com/ncp/payment/TDQ26KXWKTNU8",
-        inperson: "https://www.paypal.com/ncp/payment/433RBJJS2VRQL"
-    },
-    red: {
-        delivery: "https://www.paypal.com/ncp/payment/FX2CVP3MKK78S",
-        inperson: "https://www.paypal.com/ncp/payment/NNH76WM8W9YLU"
-    },
-    orange: {
-        delivery: "https://www.paypal.com/ncp/payment/NZ83GKRKY2XLY",
-        inperson: "https://www.paypal.com/ncp/payment/QXZD8DFPEL6ME"
-    },
-    soap_black: {
-        delivery: "https://www.paypal.com/ncp/payment/ACWBJUEK4S8SW",
-        inperson: "https://www.paypal.com/ncp/payment/37WRLULFKHZWA"
-    },
-    soap_white: {
-        delivery: "https://www.paypal.com/ncp/payment/N2NPTQVLY3HZN",
-        inperson: "https://www.paypal.com/ncp/payment/JYNDV3SQPJBXQ"
-    },
-    soap_space_grey: {
-        delivery: "https://www.paypal.com/ncp/payment/GS2L84FKRDM9G",
-        inperson: "https://www.paypal.com/ncp/payment/UZMTHDNWZR2V6"
-    },
-    soap_blue: {
-        delivery: "https://www.paypal.com/ncp/payment/TXSHBCPD65PS6",
-        inperson: "https://www.paypal.com/ncp/payment/4C7T3CVJZ4PCQ"
-    },
-    soap_red: {
-        delivery: "https://www.paypal.com/ncp/payment/TS7T8QRH67L64",
-        inperson: "https://www.paypal.com/ncp/payment/DZUVZQT96FFUA"
-    },
-    soap_orange: {
-        delivery: "https://www.paypal.com/ncp/payment/ARL7F5GXSJNDN",
-        inperson: "https://www.paypal.com/ncp/payment/E5ZZCW82CLQJN"
-    }
-};
-
 // Color selection logic
 let selectedColor = ''; // Store the selected color
 
@@ -143,29 +91,47 @@ colorCircles.forEach(circle => {
     });
 });
 
-// Add click event listener to all order buttons for phone stand
 const orderButtons = document.querySelectorAll('.shop-order-button');
+
 orderButtons.forEach(orderButton => {
-    orderButton.addEventListener('click', function() {
-        // Get the color from the button's data-color attribute or from the selected circle
+    orderButton.addEventListener('click', function () {
+        const product = orderButton.getAttribute('data-product') || '3D Printed Phone Stand';
         const colorFromButton = orderButton.getAttribute('data-color');
         const color = colorFromButton || selectedColor;
 
-        if (color) {
-            // Show a confirmation dialog to select delivery or in-person
-            const isDelivery = confirm("Do you want posted delivery? Click 'OK' for posted delivery, 'Cancel' for in-person delivery.");
-
-            // Determine the appropriate link based on the user's choice
-            const link = isDelivery 
-                ? paymentLinks[color].delivery 
-                : paymentLinks[color].inperson;
-
-            // Redirect to the chosen link
-            window.location.href = link;
-        } else {
-            // If no color is selected, prompt the user to select one
+        if (!color) {
             alert('Please select a color first!');
+            return;
         }
+
+        // Optional: define product-specific price
+        const price = '€6.95';
+
+        // Build cart item
+        const cartItem = {
+            product,
+            color,
+            price,
+            quantity: 1
+        };
+
+        // Load existing cart from localStorage or initialize
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Check if item already exists in cart (same product + color)
+        const existingIndex = cart.findIndex(item => item.product === product && item.color === color);
+
+        if (existingIndex > -1) {
+            cart[existingIndex].quantity += 1;
+        } else {
+            cart.push(cartItem);
+        }
+
+        // Save cart back to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Feedback
+        alert(`${product} (${color}) added to cart.`);
     });
 });
 
