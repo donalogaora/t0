@@ -167,3 +167,9 @@ orderButtons.forEach(orderButton => {
     updateCartNav();
   });
 });
+
+// Show the cart nav item when needed
+document.getElementById('cart-nav-item').classList.remove('hidden');
+
+// Optionally update cart count
+document.getElementById('cart-count').textContent = 2;
