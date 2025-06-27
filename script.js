@@ -137,3 +137,33 @@ document.querySelectorAll(".soap-order-button").forEach(button => {
     window.location.href = "https://shop.donalogaora.com/all-products#aqua-dry-soap-cradle";
   });
 });
+
+// Grab the cart nav elements
+const cartNavItem = document.getElementById('cart-nav-item');
+const cartCountSpan = document.getElementById('cart-count');
+
+// Function to update cart display based on what's in localStorage
+function updateCartNav() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  if (totalQty > 0) {
+    cartCountSpan.textContent = totalQty;  // update number in parentheses
+    cartNavItem.style.display = 'list-item';  // show the cart link
+  } else {
+    cartNavItem.style.display = 'none';  // hide it if cart empty
+  }
+}
+
+// Run on page load to check if there's anything in cart already
+updateCartNav();
+
+// When someone adds an item to the cart, update the nav
+orderButtons.forEach(orderButton => {
+  orderButton.addEventListener('click', function () {
+    // Your existing add-to-cart code here (which updates localStorage)...
+
+    // After adding item to cart, update the nav item
+    updateCartNav();
+  });
+});
