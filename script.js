@@ -94,7 +94,7 @@ orderButtons.forEach(orderButton => {
 
         // Format color: space_grey → Space Grey
         const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const imagePath = `/assets/shop/phonestand_${color}.webp`;
+        const imagePath = `../assets/shop/phonestand_${color}.webp`;
 
         const cartItem = {
             name: product,
