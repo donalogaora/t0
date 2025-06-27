@@ -173,3 +173,50 @@ document.getElementById('cart-nav-item').classList.remove('hidden');
 
 // Optionally update cart count
 document.getElementById('cart-count').textContent = 2;
+
+
+// CODE FOR APK PULL
+const API_URL = "https://script.google.com/macros/s/AKfycbzL1wu8NlY3xJEZLK6u2y5YQeUBpkMHyY4sWjJdFEK26cnro9rVMn4ugLELxzzzTMTp/exec";
+
+async function fetchShopData() {
+  try {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+
+    if (data.error) {
+      console.error("Error fetching data:", data.error);
+      return;
+    }
+
+    const products = data.products;
+    const promos = data.promos;
+    const delivery = data.delivery;
+
+    // Example: find a product by name
+    const phoneStand = products.find(p => p.Name === "3D Printed Phone Stand");
+    if (phoneStand) {
+      console.log("Phone Stand Price:", phoneStand.Price);
+      // You could update HTML elements dynamically like:
+      document.querySelector("#product-price").textContent = `€${phoneStand.Price}`;
+    }
+
+    // Example: Check if promo exists
+    const codeInput = "WELCOME5";
+    const activePromo = promos.find(p => p.Code === codeInput);
+    if (activePromo) {
+      console.log(`Promo ${codeInput} gives ${activePromo.Discount}% off.`);
+    }
+
+    // Example: Show delivery ETA for Ireland
+    const irelandDelivery = delivery.find(d => d.Zone === "Ireland");
+    if (irelandDelivery) {
+      console.log(`Delivery in Ireland: €${irelandDelivery.Cost}, ETA: ${irelandDelivery.ETA}`);
+    }
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}
+
+// ✅ Add this at the end to actually run the function on load:
+fetchShopData();
