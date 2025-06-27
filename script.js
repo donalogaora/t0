@@ -175,6 +175,8 @@ document.getElementById('cart-nav-item').classList.remove('hidden');
 document.getElementById('cart-count').textContent = 2;
 
 
+console.log("🔥 script.js loaded");
+
 // CODE FOR APK PULL
 const API_URL = "https://script.google.com/macros/s/AKfycbzL1wu8NlY3xJEZLK6u2y5YQeUBpkMHyY4sWjJdFEK26cnro9rVMn4ugLELxzzzTMTp/exec";
 
