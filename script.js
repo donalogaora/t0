@@ -67,6 +67,27 @@ startSoapCradleCarousel();
 // Color selection logic
 let selectedColor = ''; // Store the selected color
 
+const colorCircles = document.querySelectorAll('.circle');
+const toggleImage = document.getElementById('toggle-image');
+
+colorCircles.forEach(circle => {
+    circle.addEventListener('click', () => {
+        selectedColor = circle.getAttribute('data-color');
+
+        // Fix: update image with correct path + filename format
+        toggleImage.src = `/assets/shop/phonestand_${selectedColor}.webp`;
+
+        // Stop carousel
+        clearInterval(phoneStandCarouselInterval);
+        phoneStandIsCarouselActive = false;
+        phoneStandImageElement.style.opacity = 1;
+
+        // Update selected circle styling
+        colorCircles.forEach(c => c.classList.remove('selected'));
+        circle.classList.add('selected');
+    });
+});
+
 // Select the color circles for phone stand
 const colorCircles = document.querySelectorAll('.circle');
 const toggleImage = document.getElementById('toggle-image');
@@ -96,7 +117,7 @@ const orderButtons = document.querySelectorAll('.shop-order-button');
 orderButtons.forEach(orderButton => {
     orderButton.addEventListener('click', function () {
         const product = orderButton.getAttribute('data-product') || '3D Printed Phone Stand';
-        const price = 6.95; // Matches what the cart expects
+        const price = 6.95;
         const color = selectedColor;
 
         if (!color) {
@@ -104,21 +125,21 @@ orderButtons.forEach(orderButton => {
             return;
         }
 
-        const imagePath = `/assets/shop/phonestand_${color}.webp`; // Match your preview naming convention
+        // Format color: space_grey → Space Grey
+        const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const imagePath = `/assets/shop/phonestand_${color}.webp`;
 
         const cartItem = {
             name: product,
-            color: color,
+            color: formattedColor,
             price: price,
             qty: 1,
             image: imagePath
         };
 
-        // Load existing cart from localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Check if same item already exists
-        const existingIndex = cart.findIndex(item => item.name === product && item.color === color);
+        const existingIndex = cart.findIndex(item => item.name === product && item.color === formattedColor);
 
         if (existingIndex > -1) {
             cart[existingIndex].qty += 1;
@@ -126,11 +147,9 @@ orderButtons.forEach(orderButton => {
             cart.push(cartItem);
         }
 
-        // Save back to localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Optional: User feedback
-        alert(`${product} (${color}) added to cart!`);
+        alert(`${formattedColor} ${product} added to cart!`);
     });
 });
 
