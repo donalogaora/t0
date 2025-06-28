@@ -197,7 +197,11 @@ function updateDomFields() {
     const field = elem.getAttribute("data-field");
     const value = getProductField(id, field);
     if (value !== null) {
-      elem.textContent = value;
+      if (field.toLowerCase() === 'price') {
+        elem.textContent = `€${value}`;
+      } else {
+        elem.textContent = value;
+      }
     }
   });
 }
