@@ -315,14 +315,21 @@ function updateTotals() {
   if (appliedPromo) {
     discountAmount = (subtotal * appliedPromo.discount_percentage) / 100;
   }
-  discountEl.textContent = discountAmount.toFixed(2);
 
-  const total = subtotal - discountAmount;
+  discountEl.textContent = discountAmount.toFixed(2);
+  discountRow.style.display = discountAmount > 0 ? 'flex' : 'none';
+
+  const total = Math.max(0, subtotal - discountAmount);
   totalEl.textContent = total.toFixed(2);
 
+  const canCheckout = total > 0 && cart.length > 0;
+  checkoutBtn.disabled = !canCheckout;
+  checkoutBtn.setAttribute('aria-disabled', (!canCheckout).toString());
+
   // Update PayPal button with the correct total
-  renderPayPalButton();  // Call this to update the PayPal button based on the total
+  renderPayPalButton();  // This should be LAST
 }
+
 
   discountEl.textContent = discountAmount.toFixed(2);
   discountRow.style.display = discountAmount > 0 ? 'flex' : 'none';
