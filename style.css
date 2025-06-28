@@ -548,7 +548,7 @@ colour-table {
     font-weight: bold; /* Bold text */
     color: #6e6d68; /* Transparent fill color */
     -webkit-text-stroke: 1px #24252b; /* Outline effect */
-    text-transform: uppercase; /* Uppercase text */
+    /*text-transform: uppercase;*/ /* Uppercase text */
     margin-right: 10px; /* Add spacing between price and button */
 }
 
