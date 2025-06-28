@@ -451,7 +451,6 @@ colour-table {
     font-weight: bold !important; /* Force bold text */
     color: #6e6d68; /* Transparent fill color */
     -webkit-text-stroke: 1px #24252b; /* Outline effect */
-    text-transform: uppercase; /* Uppercase text */
     margin-right: 10px; /* Control spacing between price and button */
 }
 
