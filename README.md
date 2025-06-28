@@ -1,2 +1,2 @@
 # tester
-Repo for pre-publishing testing for *.donalogaora.com
+Repo for pre-published testing for *.donalogaora.com
