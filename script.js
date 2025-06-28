@@ -235,7 +235,7 @@ function fetchAllProducts() {
 // ✅ DOM must be ready
 document.addEventListener("DOMContentLoaded", fetchAllProducts);
 
-
+/*
 // promo code code
 let appliedPromo = null;
 
@@ -346,3 +346,4 @@ if (savedPromo) {
   promoMessage.classList.add('success');
   updateTotals();
 }
+*/
