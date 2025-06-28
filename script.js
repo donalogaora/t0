@@ -185,7 +185,6 @@ function normalizeKey(str) {
 }
 
 function getProductField(id, field) {
-  if (!productsData) return null;
   const product = productsData[id.toLowerCase()];
   if (!product) return null;
   return product[normalizeKey(field)] ?? null;
@@ -211,9 +210,10 @@ function fetchAllProducts() {
         const [id, ...rest] = flatKey.split("_");
         const keyRaw = rest.join("_"); // e.g. "product name"
         const key = normalizeKey(keyRaw); // e.g. "product_name"
+        const idNormalized = id.toLowerCase();
 
-        if (!productsData[id]) productsData[id] = {};
-        productsData[id][key] = value;
+        if (!productsData[idNormalized]) productsData[idNormalized] = {};
+        productsData[idNormalized][key] = value;
       }
 
       console.log("All products loaded:", productsData);
@@ -222,5 +222,7 @@ function fetchAllProducts() {
     .catch(err => console.error("Failed to load products:", err));
 }
 
-fetchAllProducts();
+// ✅ DOM must be ready
+document.addEventListener("DOMContentLoaded", fetchAllProducts);
+
 
