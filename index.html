@@ -183,53 +183,11 @@
   </div>
   <br><br>
 
-<h1>Products</h1>
-<div id="products"></div>
-
-<script>
-  const PRODUCTS_API = "https://sheetdb.io/api/v1/YOUR_SHEETDB_API_URL";
-
-  let productsData = {};
-
-  async function loadProducts() {
-    try {
-      const res = await fetch(PRODUCTS_API);
-      const products = await res.json();
-
-      const container = document.getElementById("products");
-
-      products.forEach(product => {
-        const id = product.ID;
-        productsData[id] = {
-          id,
-          name: product.Name,
-          price: parseFloat(product.Price),
-          stock: parseInt(product.Stock),
-          delivery: product["Delivery ETA"]
-        };
-      });
-
-      container.innerHTML = products.map(p => `
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-          <strong>${p.Name}</strong> (ID: ${p.ID})<br/>
-          Price: €${parseFloat(p.Price).toFixed(2)}<br/>
-          Stock: ${p.Stock}<br/>
-          Delivery ETA: ${p["Delivery ETA"]}
-        </div>
-      `).join('');
-
-    } catch (err) {
-      console.error("Failed to load products:", err);
-    }
-  }
-
-  function getPriceById(id) {
-    return productsData[id] ? productsData[id].price : null;
-  }
-
-  loadProducts();
-</script>
-
+  
+  <!-- Example usage in your HTML -->
+  <p>Price for 1A: <span data-product-id="1a" data-field="price"></span></p>
+  <p>Name for 3f: <span data-product-id="3f" data-field="product name"></span></p>
+  <p>Colour for 2b: <span data-product-id="2b" data-field="colour"></span></p>
 
   <br><br><br><br>
   <br><br>
