@@ -274,10 +274,40 @@
   <a href="https://tester.donalogaora.com" class="back-btn">&larr; Continue Shopping</a>
 
 <script>
-  const promoCodes = {
-    SAVE10: 10,
-    SAVE20: 20
-  };
+  let promoCodes = {};
+  
+  fetch('https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true')
+    .then(res => res.json())
+    .then(data => {
+      promoCodes = transformPromoData(data);
+    })
+    .catch(err => {
+      console.error('Failed to load promo codes:', err);
+    });
+  
+  function transformPromoData(data) {
+    const result = {};
+    for (const key in data) {
+      if (key.endsWith('_promo_code')) {
+        const pid = key.split('_')[0];
+        const promoCode = data[key].toUpperCase();
+        const discountKey = `${pid}_discont_amount`; // Match your GAS spelling
+        const discount = data[discountKey];
+  
+        // Optional: parse percentage or number
+        let discountValue = 0;
+        if (typeof discount === 'string' && discount.includes('%')) {
+          discountValue = parseFloat(discount);
+        } else {
+          discountValue = Number(discount);
+        }
+  
+        result[promoCode] = discountValue;
+      }
+    }
+    return result;
+  }
+
 
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   let appliedDiscount = 0;
