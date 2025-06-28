@@ -176,21 +176,22 @@ document.getElementById('cart-count').textContent = 2;
 
 
 // ShopBackend API Pull
-// Replace this with your actual URL including ?all=true
 const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
 
 const productsData = {};
+
+function normalizeKey(str) {
+  return str.toLowerCase().replace(/\s+/g, "_");
+}
 
 function getProductField(id, field) {
   if (!productsData) return null;
   const product = productsData[id.toLowerCase()];
   if (!product) return null;
-  return product[field.toLowerCase()] ?? null;
+  return product[normalizeKey(field)] ?? null;
 }
 
 function updateDomFields() {
-  // Example: update all elements with data attributes: data-product-id & data-field
-  // e.g. <span data-product-id="1a" data-field="price"></span>
   const elems = document.querySelectorAll("[data-product-id][data-field]");
   elems.forEach(elem => {
     const id = elem.getAttribute("data-product-id");
@@ -208,18 +209,18 @@ function fetchAllProducts() {
     .then(flatData => {
       for (const [flatKey, value] of Object.entries(flatData)) {
         const [id, ...rest] = flatKey.split("_");
-        const key = rest.join("_");
+        const keyRaw = rest.join("_"); // e.g. "product name"
+        const key = normalizeKey(keyRaw); // e.g. "product_name"
+
         if (!productsData[id]) productsData[id] = {};
         productsData[id][key] = value;
       }
 
       console.log("All products loaded:", productsData);
-
-      // Automatically update DOM fields after loading data
       updateDomFields();
     })
     .catch(err => console.error("Failed to load products:", err));
 }
 
-// Run fetch on script load
 fetchAllProducts();
+
