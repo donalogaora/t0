@@ -1,5 +1,4 @@
-// ================== Your existing carousel & color selection code ===================
-
+// Use absolute paths for images on main page
 const phoneStandImageElement = document.getElementById('toggle-image');
 const phoneStandImages = [
     '/assets/shop/phonestand_black.webp',
@@ -35,7 +34,7 @@ function startPhoneStandCarousel() {
                 phoneStandCurrentIndex = (phoneStandCurrentIndex + 1) % phoneStandImages.length;
                 phoneStandImageElement.src = phoneStandImages[phoneStandCurrentIndex];
                 phoneStandImageElement.style.opacity = 1;
-            }, 500);
+            }, 500);  // 500ms fade out to fade in (was 50ms too quick)
         }, 1500);
     }
 }
@@ -66,7 +65,7 @@ colorCircles.forEach(circle => {
     circle.addEventListener('click', () => {
         selectedColor = circle.getAttribute('data-color');
 
-        // Update image
+        // Update image using consistent naming
         toggleImage.src = `/assets/shop/phonestand_${selectedColor}.webp`;
 
         // Stop carousel
@@ -80,8 +79,6 @@ colorCircles.forEach(circle => {
     });
 });
 
-// ================== Cart & Product Handling ===================
-
 const orderButtons = document.querySelectorAll('.shop-order-button');
 
 orderButtons.forEach(orderButton => {
@@ -94,7 +91,7 @@ orderButtons.forEach(orderButton => {
 
     const productName = getProductField(productId, 'product_name') || 'Unnamed Product';
     const price = parseFloat(getProductField(productId, 'price')) || 0;
-    const imagePath = `/assets/shop/phonestand_${selectedColor}.webp`;
+    const imagePath = `../assets/shop/phonestand_${selectedColor}.webp`;
     const color = selectedColor;
 
     if (!color) {
@@ -128,22 +125,6 @@ orderButtons.forEach(orderButton => {
   });
 });
 
-function updateCartNav() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-
-  const cartNavItem = document.getElementById('cart-nav-item');
-  const cartCountSpan = document.getElementById('cart-count');
-
-  if (totalQty > 0) {
-    cartCountSpan.textContent = totalQty;  
-    cartNavItem.style.display = 'list-item';  
-  } else {
-    cartNavItem.style.display = 'none';  
-  }
-}
-
-updateCartNav();
 
 // Scroll to hash on load
 window.addEventListener("load", function() {
@@ -156,20 +137,54 @@ window.addEventListener("load", function() {
   }
 });
 
-// Soap order button redirect fix
+// Fix for soap order buttons - multiple elements
 document.querySelectorAll(".soap-order-button").forEach(button => {
   button.addEventListener("click", () => {
     window.location.href = "https://shop.donalogaora.com/all-products#aqua-dry-soap-cradle";
   });
 });
 
-// ================== Data Fetch & Helpers ===================
+// Grab the cart nav elements
+const cartNavItem = document.getElementById('cart-nav-item');
+const cartCountSpan = document.getElementById('cart-count');
 
-const PRODUCTS_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
-const PROMOS_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true";
+// Function to update cart display based on what's in localStorage
+function updateCartNav() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  if (totalQty > 0) {
+    cartCountSpan.textContent = totalQty;  // update number in parentheses
+    cartNavItem.style.display = 'list-item';  // show the cart link
+  } else {
+    cartNavItem.style.display = 'none';  // hide it if cart empty
+  }
+}
+
+// Run on page load to check if there's anything in cart already
+updateCartNav();
+
+// When someone adds an item to the cart, update the nav
+orderButtons.forEach(orderButton => {
+  orderButton.addEventListener('click', function () {
+    // Your existing add-to-cart code here (which updates localStorage)...
+
+    // After adding item to cart, update the nav item
+    updateCartNav();
+  });
+});
+
+// Show the cart nav item when needed
+document.getElementById('cart-nav-item').classList.remove('hidden');
+
+// Optionally update cart count
+document.getElementById('cart-count').textContent = 2;
+
+
+// ShopBackend API Pull
+const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
 
 const productsData = {};
-let promosData = [];
 
 function normalizeKey(str) {
   return str.toLowerCase().replace(/\s+/g, "_");
@@ -198,126 +213,24 @@ function updateDomFields() {
 }
 
 function fetchAllProducts() {
-  fetch(PRODUCTS_URL)
+  fetch(DATA_URL)
     .then(res => res.json())
     .then(flatData => {
       for (const [flatKey, value] of Object.entries(flatData)) {
         const [id, ...rest] = flatKey.split("_");
-        const keyRaw = rest.join("_");
-        const key = normalizeKey(keyRaw);
+        const keyRaw = rest.join("_"); // e.g. "product name"
+        const key = normalizeKey(keyRaw); // e.g. "product_name"
         const idNormalized = id.toLowerCase();
 
         if (!productsData[idNormalized]) productsData[idNormalized] = {};
         productsData[idNormalized][key] = value;
       }
+
       console.log("All products loaded:", productsData);
       updateDomFields();
     })
     .catch(err => console.error("Failed to load products:", err));
 }
 
-// Parse promos from flat data to array of objects
-function parsePromos(flatData) {
-  const promosMap = {};
-  for (const [flatKey, value] of Object.entries(flatData)) {
-    const [pid, ...rest] = flatKey.split('_');
-    const key = rest.join('_');
-    if (!promosMap[pid]) promosMap[pid] = {};
-    promosMap[pid][key] = value;
-  }
-  promosData = Object.values(promosMap).map(promo => ({
-    pid: promo.pid,
-    promo_code: promo.promo_code ? promo.promo_code.trim().toUpperCase() : '',
-    discount_amount: promo.discount_amount ? promo.discount_amount.trim() : '',
-    minimum_spent: promo.minimum_spent ? parseFloat(promo.minimum_spent) : null,
-    expiry_date: promo.expiry_date ? promo.expiry_date.trim() : ''
-  }));
-  console.log("Parsed promos:", promosData);
-}
-
-function fetchPromos() {
-  fetch(PROMOS_URL)
-    .then(res => res.json())
-    .then(data => {
-      parsePromos(data);
-    })
-    .catch(err => console.error("Failed to load promos:", err));
-}
-
-// ================== Promo Code Logic ===================
-
-function applyPromoCode(codeInput, cartTotal) {
-  const code = codeInput.trim().toUpperCase();
-  const promo = promosData.find(p => p.promo_code === code);
-  if (!promo) {
-    return { success: false, message: "Invalid promo code." };
-  }
-
-  // Check expiry if set and not "N/A"
-  if (promo.expiry_date && promo.expiry_date.toUpperCase() !== 'N/A') {
-    const [day, month, year] = promo.expiry_date.split('/');
-    const expiryDate = new Date(`${year}-${month}-${day}`);
-    const today = new Date();
-    if (today > expiryDate) {
-      return { success: false, message: "Promo code has expired." };
-    }
-  }
-
-  // Check minimum spend
-  if (promo.minimum_spent !== null && cartTotal < promo.minimum_spent) {
-    return { success: false, message: `Minimum spend of €${promo.minimum_spent} required.` };
-  }
-
-  // Calculate discount
-  let discountAmount = 0;
-  if (promo.discount_amount.endsWith('%')) {
-    const percent = parseFloat(promo.discount_amount);
-    discountAmount = (percent / 100) * cartTotal;
-  } else {
-    discountAmount = parseFloat(promo.discount_amount);
-  }
-
-  const finalTotal = Math.max(0, cartTotal - discountAmount);
-
-  return {
-    success: true,
-    message: `Promo applied! You saved €${discountAmount.toFixed(2)}.`,
-    discountAmount,
-    finalTotal
-  };
-}
-
-// ================== Promo UI Hook ===================
-
-// Make sure your HTML has these elements:
-// <input id="promo-code-input" type="text">
-// <button id="apply-promo-button">Apply Promo</button>
-// <div id="promo-message"></div>
-// <div id="cart-total"></div> (to display total price)
-
-document.getElementById('apply-promo-button').addEventListener('click', () => {
-  const promoInput = document.getElementById('promo-code-input').value;
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-  const result = applyPromoCode(promoInput, cartTotal);
-
-  const messageElem = document.getElementById('promo-message');
-  messageElem.textContent = result.message;
-
-  if (result.success) {
-    document.getElementById('cart-total').textContent = `Total: €${result.finalTotal.toFixed(2)}`;
-    localStorage.setItem('promoApplied', JSON.stringify(result));
-  } else {
-    document.getElementById('cart-total').textContent = `Total: €${cartTotal.toFixed(2)}`;
-    localStorage.removeItem('promoApplied');
-  }
-});
-
-// ================== Init on DOM ready ===================
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetchAllProducts();
-  fetchPromos();
-  updateCartNav();
-});
+// ✅ DOM must be ready
+document.addEventListener("DOMContentLoaded", fetchAllProducts);
