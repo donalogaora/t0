@@ -176,20 +176,50 @@ document.getElementById('cart-count').textContent = 2;
 
 
 // ShopBackend API Pull
+// Replace this with your actual URL including ?all=true
 const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
 
-fetch(DATA_URL)
-.then(res => res.json())
-.then(data => {
-  for (const [key, value] of Object.entries(data)) {
-    window[key] = value;
-  }
+const productsData = {};
 
-  // ✅ Now you can use them like:
-  console.log("1A name:", window["1A_name"]);
-  console.log("3B price:", window["3B_price"]);
+function getProductField(id, field) {
+  if (!productsData) return null;
+  const product = productsData[id.toLowerCase()];
+  if (!product) return null;
+  return product[field.toLowerCase()] ?? null;
+}
 
-  // Or directly:
-  // document.getElementById("price-box").textContent = 3B_price;
-})
-.catch(err => console.error("Error loading product data:", err));
+function updateDomFields() {
+  // Example: update all elements with data attributes: data-product-id & data-field
+  // e.g. <span data-product-id="1a" data-field="price"></span>
+  const elems = document.querySelectorAll("[data-product-id][data-field]");
+  elems.forEach(elem => {
+    const id = elem.getAttribute("data-product-id");
+    const field = elem.getAttribute("data-field");
+    const value = getProductField(id, field);
+    if (value !== null) {
+      elem.textContent = value;
+    }
+  });
+}
+
+function fetchAllProducts() {
+  fetch(DATA_URL)
+    .then(res => res.json())
+    .then(flatData => {
+      for (const [flatKey, value] of Object.entries(flatData)) {
+        const [id, ...rest] = flatKey.split("_");
+        const key = rest.join("_");
+        if (!productsData[id]) productsData[id] = {};
+        productsData[id][key] = value;
+      }
+
+      console.log("All products loaded:", productsData);
+
+      // Automatically update DOM fields after loading data
+      updateDomFields();
+    })
+    .catch(err => console.error("Failed to load products:", err));
+}
+
+// Run fetch on script load
+fetchAllProducts();
