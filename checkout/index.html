@@ -167,6 +167,12 @@
       display: flex;
       gap: 0.5rem;
       margin-top: 1rem;
+      flex-direction: column;
+    }
+
+    .promo-input-row {
+      display: flex;
+      gap: 0.5rem;
     }
 
     .promo-code input {
@@ -194,6 +200,17 @@
     }
     .promo-code button:hover {
       background-color: #1e40af;
+    }
+
+    .promo-message {
+      font-size: 0.9rem;
+      height: 1.2rem;
+      color: #ef4444;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+    .promo-message.success {
+      color: #10b981;
     }
 
     /* Checkout button */
@@ -248,9 +265,9 @@
 
   <h1>Your Shopping Cart</h1>
   <div class="container">
-    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-items" id="cart-items" aria-live="polite" aria-label="Shopping cart items"></div>
 
-    <div class="summary">
+    <div class="summary" aria-label="Order summary">
       <h2>Order Summary</h2>
       <div class="summary-row">
         <span>Subtotal</span><span>€<span id="subtotal">0.00</span></span>
@@ -262,12 +279,21 @@
         <span>Total</span><span>€<span id="total">0.00</span></span>
       </div>
 
-      <div class="promo-code">
-        <input type="text" id="promo" placeholder="Enter promo code" />
-        <button id="apply-promo">Apply</button>
+      <div class="promo-code" role="region" aria-live="polite" aria-atomic="true">
+        <div class="promo-input-row">
+          <input
+            type="text"
+            id="promo"
+            placeholder="Enter promo code"
+            aria-label="Promo code"
+            autocomplete="off"
+          />
+          <button id="apply-promo" aria-label="Apply promo code">Apply</button>
+        </div>
+        <div id="promo-message" class="promo-message" aria-live="assertive"></div>
       </div>
 
-      <button id="checkout" disabled>Proceed to Checkout</button>
+      <button id="checkout" disabled aria-disabled="true">Proceed to Checkout</button>
     </div>
   </div>
 
@@ -275,7 +301,33 @@
 
 <script>
   let promoCodes = {};
-  
+
+  // Fix typo in key 'discount_amount' (not 'discont_amount')
+  function transformPromoData(data) {
+    const result = {};
+    for (const key in data) {
+      if (key.endsWith('_promo_code')) {
+        const pid = key.split('_')[0];
+        const promoCode = data[key].toUpperCase();
+        const discountKey = `${pid}_discount_amount`; // fixed typo here
+        const discount = data[discountKey];
+
+        // We assume discount is percentage number (like '10' or '15%')
+        let discountValue = 0;
+        if (typeof discount === 'string' && discount.includes('%')) {
+          discountValue = parseFloat(discount);
+        } else {
+          discountValue = Number(discount);
+        }
+
+        if (promoCode && discountValue > 0) {
+          result[promoCode] = discountValue;
+        }
+      }
+    }
+    return result;
+  }
+
   fetch('https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true')
     .then(res => res.json())
     .then(data => {
@@ -284,32 +336,15 @@
     .catch(err => {
       console.error('Failed to load promo codes:', err);
     });
-  
-  function transformPromoData(data) {
-    const result = {};
-    for (const key in data) {
-      if (key.endsWith('_promo_code')) {
-        const pid = key.split('_')[0];
-        const promoCode = data[key].toUpperCase();
-        const discountKey = `${pid}_discont_amount`; // Match your GAS spelling
-        const discount = data[discountKey];
-  
-        // Optional: parse percentage or number
-        let discountValue = 0;
-        if (typeof discount === 'string' && discount.includes('%')) {
-          discountValue = parseFloat(discount);
-        } else {
-          discountValue = Number(discount);
-        }
-  
-        result[promoCode] = discountValue;
-      }
-    }
-    return result;
+
+  let cart = [];
+  try {
+    cart = JSON.parse(localStorage.getItem('cart')) || [];
+  } catch {
+    cart = [];
+    localStorage.removeItem('cart');
   }
 
-
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
   let appliedDiscount = 0;
 
   const cartItemsEl = document.getElementById('cart-items');
@@ -320,6 +355,7 @@
   const checkoutBtn = document.getElementById('checkout');
   const promoInput = document.getElementById('promo');
   const applyPromoBtn = document.getElementById('apply-promo');
+  const promoMessage = document.getElementById('promo-message');
 
   function renderCart() {
     cartItemsEl.innerHTML = '';
@@ -327,6 +363,7 @@
     if (cart.length === 0) {
       cartItemsEl.innerHTML = '<p>Your cart is empty.</p>';
       checkoutBtn.disabled = true;
+      checkoutBtn.setAttribute('aria-disabled', 'true');
       subtotalEl.textContent = '0.00';
       totalEl.textContent = '0.00';
       discountRow.style.display = 'none';
@@ -345,8 +382,8 @@
           <div class="cart-item-price">€${item.price.toFixed(2)} x ${item.qty} = €${itemTotal}</div>
         </div>
         <div class="cart-item-controls">
-          <input type="number" min="1" max="99" value="${item.qty}" data-index="${index}" />
-          <button class="cart-item-remove" data-index="${index}" title="Remove item">&times;</button>
+          <input type="number" min="1" max="99" value="${item.qty}" data-index="${index}" aria-label="Quantity for ${item.name}" />
+          <button class="cart-item-remove" data-index="${index}" title="Remove ${item.name} from cart" aria-label="Remove ${item.name}">&times;</button>
         </div>
       `;
       cartItemsEl.appendChild(cartItemHTML);
@@ -371,15 +408,17 @@
     const total = subtotal - discountAmount;
     totalEl.textContent = total.toFixed(2);
 
-    checkoutBtn.disabled = total <= 0;
+    const canCheckout = total > 0 && cart.length > 0;
+    checkoutBtn.disabled = !canCheckout;
+    checkoutBtn.setAttribute('aria-disabled', (!canCheckout).toString());
   }
 
-  // Event delegation for qty changes and remove
+  // Event delegation for quantity changes and remove buttons
   cartItemsEl.addEventListener('input', (e) => {
     if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
       const idx = +e.target.dataset.index;
       let val = parseInt(e.target.value);
-      if (val < 1) val = 1;
+      if (isNaN(val) || val < 1) val = 1;
       if (val > 99) val = 99;
       e.target.value = val;
       cart[idx].qty = val;
@@ -399,14 +438,24 @@
 
   applyPromoBtn.addEventListener('click', () => {
     const code = promoInput.value.trim().toUpperCase();
+
+    if (!code) {
+      promoMessage.textContent = 'Please enter a promo code.';
+      promoMessage.classList.remove('success');
+      return;
+    }
+
     if (promoCodes[code]) {
       appliedDiscount = promoCodes[code];
-      alert(`Promo code applied! You saved ${appliedDiscount}%`);
+      promoMessage.textContent = `Promo code applied! You saved ${appliedDiscount}%`;
+      promoMessage.classList.add('success');
+      updateTotals();
     } else {
       appliedDiscount = 0;
-      alert('Invalid promo code');
+      promoMessage.textContent = 'Invalid promo code.';
+      promoMessage.classList.remove('success');
+      updateTotals();
     }
-    updateTotals();
   });
 
   checkoutBtn.addEventListener('click', () => {
