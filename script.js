@@ -366,34 +366,21 @@ paypal.Buttons({
 }).render('#paypal-button-container');
 
 
-const stripe = Stripe('pk_live_51Rf35hELlrT9RBYSux2aoJqJJUlbMcbXEp1FK5UeO4q2eUUE2nlIisMyVgSnuEIIKciosgi9TaGIz4NYazSmq9b900NRcas80e'); // Use your public key here
+const stripe = Stripe('your-stripe-public-key'); // Add your Stripe public key here
 
 document.getElementById('stripe-button').addEventListener('click', function() {
-  fetch('/create-payment-intent', { // This should be an API endpoint on your backend
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      amount: Math.round(parseFloat(document.getElementById('total').textContent) * 100) // amount in cents
+    fetch('/create-checkout-session', { // You'll need a backend endpoint for Stripe
+        method: 'POST'
     })
-  })
-  .then(response => response.json())
-  .then(data => {
-    const clientSecret = data.clientSecret;
-    stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement, // This would be a Stripe element for card input
-        billing_details: {
-          name: 'Customer Name',
-        },
-      }
-    }).then(function(result) {
-      if (result.error) {
-        alert(result.error.message);
-      } else {
-        alert('Payment successful!');
-      }
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(sessionId) {
+        return stripe.redirectToCheckout({ sessionId: sessionId });
+    })
+    .catch(function(error) {
+        console.error("Error with Stripe Checkout:", error);
     });
-  });
 });
 
 app.post('/create-payment-intent', (req, res) => {
@@ -413,3 +400,23 @@ app.post('/create-payment-intent', (req, res) => {
   const totalAmount = Math.round(calculatedTotal * 100); // Convert to cents for Stripe
   res.json({ clientSecret: createPaymentIntent(totalAmount) }); // Use Stripe to create a payment intent
 });
+
+if (typeof paypal !== 'undefined') {
+   paypal.Buttons({
+       createOrder: function(data, actions) {
+           return actions.order.create({
+               purchase_units: [{
+                   amount: {
+                       value: totalEl.textContent // Use the total calculated in your cart
+                   }
+               }]
+           });
+       },
+       onApprove: function(data, actions) {
+           return actions.order.capture().then(function(details) {
+               alert('Transaction completed by ' + details.payer.name.given_name);
+               // Handle successful payment logic here
+           });
+       }
+   }).render('#paypal-button-container'); // Renders the button inside the div
+}
