@@ -334,3 +334,82 @@ function updateTotals() {
   checkoutBtn.setAttribute('aria-disabled', (!canCheckout).toString());
 }
 
+// Store promo in localStorage when applied
+localStorage.setItem('appliedPromo', JSON.stringify(promo));
+
+// On page load, check for an applied promo and display it
+const savedPromo = JSON.parse(localStorage.getItem('appliedPromo'));
+if (savedPromo) {
+  appliedPromo = savedPromo;
+  promoMessage.textContent = `Promo code applied: ${savedPromo.promo_code}`;
+  promoMessage.classList.add('success');
+  updateTotals();
+}
+
+//payment buttons
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: document.getElementById('total').textContent // Use the dynamically calculated total
+        }
+      }]
+    });
+  },
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      alert('Payment successful! Thank you, ' + details.payer.name.given_name);
+      // Here, you would redirect or handle the successful payment (e.g., update database, etc.)
+    });
+  }
+}).render('#paypal-button-container');
+
+
+const stripe = Stripe('pk_live_51Rf35hELlrT9RBYSux2aoJqJJUlbMcbXEp1FK5UeO4q2eUUE2nlIisMyVgSnuEIIKciosgi9TaGIz4NYazSmq9b900NRcas80e'); // Use your public key here
+
+document.getElementById('stripe-button').addEventListener('click', function() {
+  fetch('/create-payment-intent', { // This should be an API endpoint on your backend
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      amount: Math.round(parseFloat(document.getElementById('total').textContent) * 100) // amount in cents
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    const clientSecret = data.clientSecret;
+    stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement, // This would be a Stripe element for card input
+        billing_details: {
+          name: 'Customer Name',
+        },
+      }
+    }).then(function(result) {
+      if (result.error) {
+        alert(result.error.message);
+      } else {
+        alert('Payment successful!');
+      }
+    });
+  });
+});
+
+app.post('/create-payment-intent', (req, res) => {
+  const cart = req.body.cart; // Get cart from frontend
+  let calculatedTotal = 0;
+
+  cart.forEach(item => {
+    // Validate product ID
+    const product = getProductFromDB(item.id); // Fetch product from database
+    if (!product || product.price !== item.price) {
+      return res.status(400).json({ error: 'Price mismatch' });
+    }
+    calculatedTotal += product.price * item.qty;
+  });
+
+  // Send back the calculated total to the frontend
+  const totalAmount = Math.round(calculatedTotal * 100); // Convert to cents for Stripe
+  res.json({ clientSecret: createPaymentIntent(totalAmount) }); // Use Stripe to create a payment intent
+});
