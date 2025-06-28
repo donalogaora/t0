@@ -183,54 +183,53 @@
   </div>
   <br><br>
 
-  <h1>Products</h1>
-  <div id="products"></div>
+<h1>Products</h1>
+<div id="products"></div>
 
-  <script>
-    const PRODUCTS_API = "https://sheetdb.io/api/v1/YOUR_SHEETDB_API_URL";
+<script>
+  const PRODUCTS_API = "https://sheetdb.io/api/v1/YOUR_SHEETDB_API_URL";
 
-    let productsData = {};
+  let productsData = {};
 
-    async function loadProducts() {
-      try {
-        const res = await fetch(PRODUCTS_API);
-        const products = await res.json();
+  async function loadProducts() {
+    try {
+      const res = await fetch(PRODUCTS_API);
+      const products = await res.json();
 
-        const container = document.getElementById("products");
+      const container = document.getElementById("products");
 
-        products.forEach(product => {
-          // Convert fields as needed
-          const id = product.ID;
-          productsData[id] = {
-            id,
-            name: product.Name,
-            price: parseFloat(product.Price),
-            stock: parseInt(product.Stock),
-            delivery: product["Delivery ETA"]
-          };
-        });
+      products.forEach(product => {
+        const id = product.ID;
+        productsData[id] = {
+          id,
+          name: product.Name,
+          price: parseFloat(product.Price),
+          stock: parseInt(product.Stock),
+          delivery: product["Delivery ETA"]
+        };
+      });
 
-        container.innerHTML = products.map(p => `
-          <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-            <strong>${p.name}</strong> (ID: ${p.ID})<br/>
-            Price: €${parseFloat(p.Price).toFixed(2)}<br/>
-            Stock: ${p.Stock}<br/>
-            Delivery ETA: ${p["Delivery ETA"]}
-          </div>
-        `).join('');
+      container.innerHTML = products.map(p => `
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+          <strong>${p.Name}</strong> (ID: ${p.ID})<br/>
+          Price: €${parseFloat(p.Price).toFixed(2)}<br/>
+          Stock: ${p.Stock}<br/>
+          Delivery ETA: ${p["Delivery ETA"]}
+        </div>
+      `).join('');
 
-      } catch (err) {
-        console.error("Failed to load products:", err);
-      }
+    } catch (err) {
+      console.error("Failed to load products:", err);
     }
+  }
 
-    function getPriceById(id) {
-      return productsData[id] ? productsData[id].price : null;
-    }
+  function getPriceById(id) {
+    return productsData[id] ? productsData[id].price : null;
+  }
 
-    // Load on page start
-    loadProducts();
-  </script>
+  loadProducts();
+</script>
+
 
   <br><br><br><br>
   <br><br>
