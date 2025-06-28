@@ -234,3 +234,95 @@ function fetchAllProducts() {
 
 // ✅ DOM must be ready
 document.addEventListener("DOMContentLoaded", fetchAllProducts);
+
+
+// promo code code
+const PROMO_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true";
+let promoData = {};
+let appliedPromo = null;
+
+function fetchPromos() {
+  fetch(PROMO_URL)
+    .then(res => res.json())
+    .then(data => {
+      // Flatten into easier lookup structure
+      for (const [key, value] of Object.entries(data)) {
+        const [id, field] = key.split('_', 2);
+        if (!promoData[id]) promoData[id] = {};
+        promoData[id][field] = value;
+      }
+    })
+    .catch(err => console.error("Failed to load promos:", err));
+}
+
+function validatePromo(code, total) {
+  const entries = Object.values(promoData);
+  const promo = entries.find(p => p.promo_code.toLowerCase() === code.toLowerCase());
+
+  if (!promo) return { valid: false, reason: "Promo code not found." };
+
+  const expiry = promo.expiry_date ? new Date(promo.expiry_date) : null;
+  const now = new Date();
+
+  if (expiry && now > expiry) {
+    return { valid: false, reason: "Promo code expired." };
+  }
+
+  const min = promo.minimum_spent ? parseFloat(promo.minimum_spent) : 0;
+  if (total < min) {
+    return { valid: false, reason: `Minimum spend of €${min} required.` };
+  }
+
+  return { valid: true, promo };
+}
+
+function applyPromoToTotal(code, cartTotal) {
+  const result = validatePromo(code, cartTotal);
+  if (!result.valid) return result;
+
+  const { promo } = result;
+  const discountAmount = parseFloat(promo.discont_amount);
+  let discount = 0;
+
+  // If discountAmount is between 0 and 1 => percentage, else fixed
+  if (discountAmount > 0 && discountAmount < 1) {
+    discount = cartTotal * discountAmount;
+  } else {
+    discount = discountAmount;
+  }
+
+  return {
+    valid: true,
+    promo,
+    discount,
+    finalTotal: Math.max(0, cartTotal - discount)
+  };
+}
+
+// Example: Hook into checkout or promo code input
+document.addEventListener("DOMContentLoaded", () => {
+  fetchPromos();
+
+  const promoInput = document.getElementById("promo-code-input");
+  const applyButton = document.getElementById("apply-promo-btn");
+  const promoResult = document.getElementById("promo-result");
+
+  if (applyButton && promoInput && promoResult) {
+    applyButton.addEventListener("click", () => {
+      const code = promoInput.value.trim();
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+      const result = applyPromoToTotal(code, total);
+
+      if (!result.valid) {
+        promoResult.textContent = result.reason;
+        appliedPromo = null;
+      } else {
+        promoResult.textContent = `Promo applied: -€${result.discount.toFixed(2)} off`;
+        appliedPromo = result;
+      }
+    });
+  }
+});
+
