@@ -175,40 +175,21 @@ document.getElementById('cart-nav-item').classList.remove('hidden');
 document.getElementById('cart-count').textContent = 2;
 
 
-console.log("🔥 script.js loaded");
+// ShopBackend API Pull
+const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
 
-// CODE FOR APK PULL
-const API_URL = "https://script.google.com/macros/s/AKfycbzL1wu8NlY3xJEZLK6u2y5YQeUBpkMHyY4sWjJdFEK26cnro9rVMn4ugLELxzzzTMTp/exec";
-
-async function fetchShopData() {
-  try {
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    console.log("Fetched data:", data);
-
-    const products = data.products || [];
-    console.log("Products array:", products);
-
-    const phoneStand = products.find(p => {
-      console.log("Checking:", p.Name);
-      return p.Name === "3D Printed Phone Stand";
-    });
-    console.log("phoneStand result:", phoneStand);
-
-    if (phoneStand) {
-      const priceElement = document.querySelector("#product-price");
-      if (priceElement) {
-        priceElement.textContent = `€${parseFloat(phoneStand.Price).toFixed(2)}`;
-        console.log("Updated price element to:", priceElement.textContent);
-      } else {
-        console.error("❌ #product-price element NOT found in DOM");
-      }
-    } else {
-      console.error("❌ '3D Printed Phone Stand' NOT found in products");
-    }
-  } catch (err) {
-    console.error("❌ Fetch error:", err);
+fetch(DATA_URL)
+.then(res => res.json())
+.then(data => {
+  for (const [key, value] of Object.entries(data)) {
+    window[key] = value;
   }
-}
 
-fetchShopData();
+  // ✅ Now you can use them like:
+  console.log("1A name:", window["1A_name"]);
+  console.log("3B price:", window["3B_price"]);
+
+  // Or directly:
+  // document.getElementById("price-box").textContent = 3B_price;
+})
+.catch(err => console.error("Error loading product data:", err));
