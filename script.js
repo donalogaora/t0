@@ -89,7 +89,7 @@ orderButtons.forEach(orderButton => {
       return;
     }
 
-    const productName = getProductField(productId, 'name') || 'Unnamed Product';
+    const productName = getProductField(productId, 'product_name') || 'Unnamed Product';
     const price = parseFloat(getProductField(productId, 'price')) || 0;
     const imagePath = `../assets/shop/phonestand_${selectedColor}.webp`;
     const color = selectedColor;
