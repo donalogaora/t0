@@ -260,6 +260,8 @@
       }
     }
   </style>
+  <script src="https://www.paypal.com/sdk/js?client-id=AawP-UywdShNJAAv66OxLHXIInKjkRyB6Z2m969czSz48v6brCRqhxTw5mLPafZGQfDthCUMTM-i05ia&currency=EUR"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
@@ -468,5 +470,9 @@
 
   renderCart();
 </script>
+  <div id="payment-buttons">
+    <div id="paypal-button-container"></div>
+    <button id="stripe-button">Pay with Stripe</button>
+  </div>
 </body>
 </html>
