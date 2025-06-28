@@ -82,43 +82,49 @@ colorCircles.forEach(circle => {
 const orderButtons = document.querySelectorAll('.shop-order-button');
 
 orderButtons.forEach(orderButton => {
-    orderButton.addEventListener('click', function () {
-        const product = orderButton.getAttribute('data-product') || '3D Printed Phone Stand';
-        const price = 6.95;
-        const color = selectedColor;
+  orderButton.addEventListener('click', function () {
+    const productId = orderButton.getAttribute('data-product-id');
+    if (!productId) {
+      alert("Missing product ID.");
+      return;
+    }
 
-        if (!color) {
-            alert('Please select a color first!');
-            return;
-        }
+    const productName = getProductField(productId, 'name') || 'Unnamed Product';
+    const price = parseFloat(getProductField(productId, 'price')) || 0;
+    const imagePath = `../assets/shop/phonestand_${selectedColor}.webp`;
+    const color = selectedColor;
 
-        // Format color: space_grey → Space Grey
-        const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const imagePath = `../assets/shop/phonestand_${color}.webp`;
+    if (!color) {
+      alert('Please select a color first!');
+      return;
+    }
 
-        const cartItem = {
-            name: product,
-            color: formattedColor,
-            price: price,
-            qty: 1,
-            image: imagePath
-        };
+    const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartItem = {
+      id: productId,
+      name: productName,
+      color: formattedColor,
+      price: price,
+      qty: 1,
+      image: imagePath
+    };
 
-        const existingIndex = cart.findIndex(item => item.name === product && item.color === formattedColor);
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingIndex = cart.findIndex(item => item.id === productId && item.color === formattedColor);
 
-        if (existingIndex > -1) {
-            cart[existingIndex].qty += 1;
-        } else {
-            cart.push(cartItem);
-        }
+    if (existingIndex > -1) {
+      cart[existingIndex].qty += 1;
+    } else {
+      cart.push(cartItem);
+    }
 
-        localStorage.setItem('cart', JSON.stringify(cart));
-
-        alert(`${formattedColor} ${product} added to cart!`);
-    });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartNav(); // Update icon count
+    alert(`${formattedColor} ${productName} added to cart!`);
+  });
 });
+
 
 // Scroll to hash on load
 window.addEventListener("load", function() {
