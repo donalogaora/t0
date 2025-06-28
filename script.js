@@ -307,6 +307,7 @@ applyPromoBtn.addEventListener('click', () => {
 });
 
 
+
 function updateTotals() {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   subtotalEl.textContent = subtotal.toFixed(2);
