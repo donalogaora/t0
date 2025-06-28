@@ -237,92 +237,99 @@ document.addEventListener("DOMContentLoaded", fetchAllProducts);
 
 
 // promo code code
-const PROMO_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true";
-let promoData = {};
 let appliedPromo = null;
 
-function fetchPromos() {
-  fetch(PROMO_URL)
-    .then(res => res.json())
-    .then(data => {
-      // Flatten into easier lookup structure
-      for (const [key, value] of Object.entries(data)) {
-        const [id, field] = key.split('_', 2);
-        if (!promoData[id]) promoData[id] = {};
-        promoData[id][field] = value;
-      }
-    })
-    .catch(err => console.error("Failed to load promos:", err));
-}
+// Fetch promo data
+fetch('https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?promos=true')
+  .then(res => res.json())
+  .then(data => {
+    promoCodes = {};
+    // Restructure promo data for easier use
+    for (const key in data) {
+      const [id, field] = key.split('_');
+      if (!promoCodes[id]) promoCodes[id] = {};
+      promoCodes[id][field] = data[key];
+    }
+  })
+  .catch(err => {
+    console.error('Failed to load promo codes:', err);
+  });
 
-function validatePromo(code, total) {
-  const entries = Object.values(promoData);
-  const promo = entries.find(p => p.promo_code.toLowerCase() === code.toLowerCase());
+// Apply promo logic
+applyPromoBtn.addEventListener('click', () => {
+  const codeInput = promoInput.value.trim().toUpperCase();
+  if (!codeInput) {
+    promoMessage.textContent = 'Please enter a promo code.';
+    promoMessage.classList.remove('success');
+    return;
+  }
 
-  if (!promo) return { valid: false, reason: "Promo code not found." };
-
-  const expiry = promo.expiry_date ? new Date(promo.expiry_date) : null;
   const now = new Date();
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  if (expiry && now > expiry) {
-    return { valid: false, reason: "Promo code expired." };
+  // Find promo object matching code
+  const promo = Object.values(promoCodes).find(p => p.promo_code?.toUpperCase() === codeInput);
+
+  if (!promo) {
+    appliedPromo = null;
+    promoMessage.textContent = 'Invalid promo code.';
+    promoMessage.classList.remove('success');
+    updateTotals();
+    return;
   }
 
-  const min = promo.minimum_spent ? parseFloat(promo.minimum_spent) : 0;
-  if (total < min) {
-    return { valid: false, reason: `Minimum spend of €${min} required.` };
+  // Check expiry
+  if (promo.expiry_date) {
+    const expiry = new Date(promo.expiry_date);
+    if (now > expiry) {
+      appliedPromo = null;
+      promoMessage.textContent = 'Promo code expired.';
+      promoMessage.classList.remove('success');
+      updateTotals();
+      return;
+    }
   }
 
-  return { valid: true, promo };
-}
-
-function applyPromoToTotal(code, cartTotal) {
-  const result = validatePromo(code, cartTotal);
-  if (!result.valid) return result;
-
-  const { promo } = result;
-  const discountAmount = parseFloat(promo.discont_amount);
-  let discount = 0;
-
-  // If discountAmount is between 0 and 1 => percentage, else fixed
-  if (discountAmount > 0 && discountAmount < 1) {
-    discount = cartTotal * discountAmount;
-  } else {
-    discount = discountAmount;
+  // Check minimum spend
+  const minSpend = parseFloat(promo.minimum_spent || 0);
+  if (subtotal < minSpend) {
+    appliedPromo = null;
+    promoMessage.textContent = `Minimum spend of €${minSpend.toFixed(2)} required.`;
+    promoMessage.classList.remove('success');
+    updateTotals();
+    return;
   }
 
-  return {
-    valid: true,
-    promo,
-    discount,
-    finalTotal: Math.max(0, cartTotal - discount)
-  };
-}
-
-// Example: Hook into checkout or promo code input
-document.addEventListener("DOMContentLoaded", () => {
-  fetchPromos();
-
-  const promoInput = document.getElementById("promo-code-input");
-  const applyButton = document.getElementById("apply-promo-btn");
-  const promoResult = document.getElementById("promo-result");
-
-  if (applyButton && promoInput && promoResult) {
-    applyButton.addEventListener("click", () => {
-      const code = promoInput.value.trim();
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-      const result = applyPromoToTotal(code, total);
-
-      if (!result.valid) {
-        promoResult.textContent = result.reason;
-        appliedPromo = null;
-      } else {
-        promoResult.textContent = `Promo applied: -€${result.discount.toFixed(2)} off`;
-        appliedPromo = result;
-      }
-    });
-  }
+  appliedPromo = promo;
+  promoMessage.textContent = `Promo code applied: ${promo.promo_code}`;
+  promoMessage.classList.add('success');
+  updateTotals();
 });
+
+
+function updateTotals() {
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  subtotalEl.textContent = subtotal.toFixed(2);
+
+  let discountAmount = 0;
+
+  if (appliedPromo) {
+    const discount = parseFloat(appliedPromo.discont_amount); // API uses discont_amount!
+    if (discount > 0 && discount < 1) {
+      discountAmount = subtotal * discount; // percentage
+    } else {
+      discountAmount = discount; // fixed amount
+    }
+  }
+
+  discountEl.textContent = discountAmount.toFixed(2);
+  discountRow.style.display = discountAmount > 0 ? 'flex' : 'none';
+
+  const total = Math.max(0, subtotal - discountAmount);
+  totalEl.textContent = total.toFixed(2);
+
+  const canCheckout = total > 0 && cart.length > 0;
+  checkoutBtn.disabled = !canCheckout;
+  checkoutBtn.setAttribute('aria-disabled', (!canCheckout).toString());
+}
 
