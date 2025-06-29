@@ -19,7 +19,11 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f9fafb;
+      background-image: url(../assets/main_background.png);
+      background-repeat: no-repeat;
+      background-position: right top;
+      background-attachment: fixed;
+      background-size: cover;
       color: #111827;
       min-height: 100vh;
       display: flex;
@@ -40,6 +44,8 @@
       font-size: 2rem;
       margin-bottom: 2rem;
       text-align: center;
+      color: white;
+      font-family: "Impact", sans-serif;      
     }
 
     .container {
@@ -300,6 +306,26 @@
     </div>
   </div>
 
+  <button type="button" onclick="window.location.href='https://tester.donalogaora.com'" 
+    style="
+        padding: 15px 30px;
+        font-size: 18px;
+        font-family: 'Arial Black', sans-serif;
+        color: red;
+        background-color: white;
+        text-transform: uppercase;
+        text-decoration: none;
+        border-radius: 5px;
+        box-shadow: 5px 5px 10px red;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        display: inline-block;
+    "
+    onmouseover="this.style.backgroundColor='red'; this.style.color='white'; this.style.boxShadow='5px 5px 15px white';"
+    onmouseout="this.style.backgroundColor='white'; this.style.color='red'; this.style.boxShadow='5px 5px 10px red';">
+    &larr; Continue Shopping
+  </button>
+  
   <a href="https://tester.donalogaora.com" class="back-btn">&larr; Continue Shopping</a>
 
 <script>
