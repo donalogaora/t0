@@ -4,27 +4,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>Shop Checkout | Dónal Ó Gaora</title>
+
   <!-- Favicon Links -->
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon.ico/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon.ico/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon.ico/favicon-16x16.png">
   <link rel="manifest" href="../assets/favicon.ico/site.webmanifest">
   <link rel="icon" href="../assets/favicon.ico/favicon.ico" type="image/x-icon">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .cart {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    #paypal-button-container {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
+
   <!-- Load PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=Ad0UuIaFx3HdRGkZOYahaSDkUR_n6kJJTLkWTbHgOfW-80a3q8xTxh-LhHY916yjwxpOMz0eL0P0zI6G&currency=EUR"></script>
-  
+
+  <div class="cart">
+    <h2>Your Cart</h2>
+    <ul id="cart-items">
+      <!-- Cart items will be inserted here -->
+    </ul>
+    <p>Total: €<span id="cart-total">0.00</span></p>
+  </div>
+
   <!-- PayPal button container -->
   <div id="paypal-button-container"></div>
-  
+
   <script>
+    const cart = [
+      { name: "T-shirt", price: 14.99 },
+      { name: "Sticker Pack", price: 4.99 }
+    ];
+
+    function renderCart() {
+      const list = document.getElementById("cart-items");
+      const total = document.getElementById("cart-total");
+      list.innerHTML = "";
+      let totalAmount = 0;
+
+      cart.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - €${item.price.toFixed(2)}`;
+        list.appendChild(li);
+        totalAmount += item.price;
+      });
+
+      total.textContent = totalAmount.toFixed(2);
+    }
+
+    renderCart();
+
     paypal.Buttons({
       createOrder: function(data, actions) {
+        const total = cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
         return actions.order.create({
           purchase_units: [{
+            description: "Cart Checkout",
             amount: {
-              value: '19.99' // Replace with actual cart value
+              currency_code: "EUR",
+              value: total
             }
           }]
         });
@@ -32,10 +93,11 @@
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
           alert('Transaction completed by ' + details.payer.name.given_name);
-          // You could redirect or show a thank-you message here
+          // Optionally clear cart or redirect here
         });
       }
     }).render('#paypal-button-container');
   </script>
+
 </body>
 </html>
