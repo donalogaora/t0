@@ -149,9 +149,10 @@
         },
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(details) {
-            alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
-            localStorage.removeItem('cart');
-            window.location.href = "thank-you.html";
+            const buyerName = details.payer.name.given_name || "Customer";
+            // Pass name as query param to thank-you page
+            window.location.href = `thank-you.html?name=${encodeURIComponent(buyerName)}`;
+            localStorage.removeItem('cart'); // Clear cart
           });
         }
       }).render('#paypal-button-container');
