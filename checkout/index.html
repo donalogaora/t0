@@ -54,11 +54,8 @@
   <div id="paypal-button-container"></div>
 
   <script>
-    const cart = [
-      { name: "T-shirt", price: 14.99 },
-      { name: "Sticker Pack", price: 4.99 }
-    ];
-
+    const cart = getCartItems();
+    
     function renderCart() {
       const list = document.getElementById("cart-items");
       const total = document.getElementById("cart-total");
