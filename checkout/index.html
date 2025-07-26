@@ -263,14 +263,22 @@
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin: 10px 0; /* Space around the title */
       }
-      
-      /* Total styling */
-      .cart-postage-label {
-        font-size: 18px; /* Adjusted size to 20px */
+      .cart-subtotal-label {
+        font-size: 17px; /* Adjusted size to 20px */
         font-weight: bold !important; /* Force bold text */
         color: #6e6d68; /* Transparent fill color */
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin-right: 10px; /* Control spacing between price and button */
+        text-align: center; /* Center the text inside the inline-block */
+      }
+      /* Total styling */
+      .cart-postage-label {
+        font-size: 17px; /* Adjusted size to 20px */
+        font-weight: bold !important; /* Force bold text */
+        color: #6e6d68; /* Transparent fill color */
+        -webkit-text-stroke: 1px #24252b; /* Outline effect */
+        margin-right: 10px; /* Control spacing between price and button */
+        text-align: center; /* Center the text inside the inline-block */
       }
       .cart-total-label {
         font-size: 20px; /* Adjusted size to 20px */
@@ -278,6 +286,7 @@
         color: #6e6d68; /* Transparent fill color */
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin-right: 10px; /* Control spacing between price and button */
+        text-align: center; /* Center the text inside the inline-block */
       }
     </style>
     <!--<style>
@@ -350,6 +359,7 @@
     <div class="cart">
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
+      <p class="cart-subtotal-label">Subtotal: €<span id="cart-subtotal">0.00</span></p>
       <p class="cart-postage-label">Postage: €<span id="cart-postage">0.00</span></p>
       <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
     </div>
@@ -363,8 +373,7 @@
       async function fetchPostage() {
         if (cart.length === 0) {
           postage = 0;
-          updatePostageAndTotal();
-          return;
+          return postage;
         }
       
         try {
@@ -384,8 +393,9 @@
           console.error('Failed to fetch postage:', error);
           postage = 0; // fallback
         }
-        updatePostageAndTotal();
+        return postage;
       }
+
       
       function updatePostageAndTotal() {
         document.getElementById('cart-postage').textContent = postage.toFixed(2);
@@ -395,19 +405,25 @@
         document.getElementById('cart-total').textContent = total.toFixed(2);
       }
       
-      function renderCart() {
+      async function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartPostageEl = document.getElementById('cart-postage');
+        const cartTotalEl = document.getElementById('cart-total');
       
-        if (!cartItemsContainer) return;
+        if (!cartItemsContainer || !cartSubtotalEl || !cartPostageEl || !cartTotalEl) return;
       
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-          postage = 0;
-          updatePostageAndTotal();
+          cartSubtotalEl.textContent = '0.00';
+          cartPostageEl.textContent = '0.00';
+          cartTotalEl.textContent = '0.00';
           return;
         }
       
         cartItemsContainer.innerHTML = '';
+        let subtotal = 0;
+      
         cart.forEach(item => {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -424,25 +440,35 @@
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
           cartItemsContainer.appendChild(li);
+      
+          subtotal += item.price * item.qty;
         });
       
-        fetchPostage(); // fetch postage each time cart changes
+        cartSubtotalEl.textContent = subtotal.toFixed(2);
+      
+        // Wait for postage fetch to finish before updating total
+        await fetchPostage();
+      
+        cartPostageEl.textContent = postage.toFixed(2);
+      
+        const total = subtotal + postage;
+        cartTotalEl.textContent = total.toFixed(2);
       }
       
-      // Remove button handler stays the same
-      document.getElementById('cart-items').addEventListener('click', (event) => {
+      // Remove button handler
+      document.getElementById('cart-items').addEventListener('click', async (event) => {
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
       
           cart = cart.filter(item => !(item.id === id && item.color === color));
           localStorage.setItem('cart', JSON.stringify(cart));
-          renderCart();
+          await renderCart();  // Await here because renderCart is async now
         }
       });
       
       // Initialize rendering
-      renderCart();
+      renderCart();  // You can optionally await this if you want
     </script>
     <br><br><br><br><br><br>
     <tandcfooter>
