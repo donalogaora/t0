@@ -235,6 +235,61 @@
           padding: 0.375rem 0.75rem; 
         }
       }
+      .nav-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+      .shop-card-title {
+          font-size: 24px; /* Text size */
+          font-weight: bold; /* Bold text */
+          color: #6e6d68; /* Transparent fill color */
+          -webkit-text-stroke: 1px #24252b; /* Outline effect */
+          text-align: center; /* Center the text horizontally */
+          margin: 10px 0; /* Space around the title */
+      }
+      
+      .shop-card-description {
+          font-size: 18px; /* Text size */
+          /*font-weight: bold; /* Bold text */
+          color: #6e6d68; /* Transparent fill color */
+          -webkit-text-stroke: 1px #24252b; /* Outline effect */
+          text-align: center; /* Center the text horizontally */
+          margin: 10px 0; /* Space around the title */
+      }
+      
+      .shop-card-image {
+          width: 100%; /* Adjust image to fit card width */
+          height: 30%; /* Adjust height */
+          object-fit: cover; /* Ensure proper scaling */
+          transition: opacity 0.5s ease-in-out; /* Smooth transition effect */
+      }
+      
+      .shop-card-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 15px;
+          height: 70%; /* Content takes up the remaining card height */
+      }
+      
+      .shop-price-and-button {
+          display: flex;
+          justify-content: center; /* Center the items horizontally */
+          align-items: center; /* Center the items vertically */
+          width: 100%; /* Full width of the container */
+          gap: 15px; /* Space between the price and button */
+      }
+      
+      .shop-money-tag {
+          font-size: 20px; /* Adjusted size to 20px */
+          font-weight: bold !important; /* Force bold text */
+          color: #6e6d68; /* Transparent fill color */
+          -webkit-text-stroke: 1px #24252b; /* Outline effect */
+          margin-right: 10px; /* Control spacing between price and button */
+      }
     </style>
     <!--<style>
       body {
@@ -304,9 +359,9 @@
     <br><br>
     <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
     <div class="cart">
-      <h2>Your Cart</h2>
+      <shop-card-title>Your Cart</shop-card-title>
       <ul id="cart-items"></ul>
-      <p><strong>Total: €<span id="cart-total">0.00</span></strong></p>
+      <shop-card-description><strong>Total: €<span class="shop-money-tag" id="cart-total">0.00</span></strong></shop-card-description>
     </div>
     <div id="paypal-button-container"></div>
     <script>
