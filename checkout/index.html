@@ -71,6 +71,113 @@
       #paypal-button-container {
         margin-top: 20px;
       }
+      tandc-text {
+        color: white;
+        text-align: center;
+        font-family: "Arial Black", sans-serif;
+        font-size: 12px;
+        padding: 15px;
+        max-width: 90%; /* Ensures the text doesn't span the entire width */
+        margin: 0 auto; /* Centers the text block within the container */
+      }
+      .tandc-text-bold {
+        color: white;
+        text-align: center;
+        font-family: "Arial Black", sans-serif;
+        font-size: 12px;
+        padding: 15px;
+        max-width: 90%; /* Ensures the text doesn't span the entire width */
+        margin: 0 auto; /* Centers the text block within the container */
+        font-weight: bold; /* Ensures the text is bold */
+      }
+      /* Adjust padding for mobile screens */
+      @media (max-width: 600px) {
+        tandc-text, tandc-text-bold {
+          padding: 10px;  /* Smaller padding for phone screens */
+        }
+      }
+      tandcfooter {
+        color: white;
+        text-align: center;
+        font-family: "Arial", sans-serif;
+        font-size: 10px;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333333; /* Background color */
+        border-radius: 20px; /* Rounded corners for an oval effect */
+        padding: 5px 20px; /* Adds padding around the text */
+        display: inline-block; /* Ensure the background wraps only around the text */
+        white-space: nowrap; /* Prevent wrapping inside the footer */
+        max-width: 90%; /* Prevent the footer from stretching too wide */
+        box-sizing: border-box; /* Include padding in the width calculation */
+      }
+      /* Text and link styles for T&C and designer name */
+      .footer-tc-text, .designer {
+        color: red; /* Text color for both */
+        padding: 0; /* Remove padding */
+        display: inline; /* Display text inline to remove extra space */
+        text-align: center; /* Center the text inside the inline-block */
+        margin: 0; /* Ensure no margin between elements */
+        background-color: transparent; /* Remove the background color */
+      }
+      .designer {
+        text-decoration: none;
+      }    
+      /* Ensure no extra space between inline-block elements */
+      footer {
+        font-size: 0; /* Eliminate gaps between inline-block elements */
+      }
+      
+      footer .footer-text, footer .footer-tc-text, footer .designer {
+        font-size: 10px; /* Reset font size for elements to desired size */
+      }
+      /* Style the T&C link */
+      footer a.footer-tc-text {
+        text-decoration: none; /* Remove underline */
+        color: inherit; /* Ensure the link color is inherited */
+      }
+      /* Hover effect on T&C text */
+      .footer-tc-text:hover {
+        color: #24252b; /* Color change on hover */
+      }
+      /* Shop T&C Text Style */
+      .shop-tc-text {
+        font-size: 20px; /* Adjusted size to 20px */
+        font-weight: bold; /* Bold text */
+        color: red; /* Transparent fill color */
+        text-decoration: underline; /* Add underline */
+        cursor: pointer; /* Pointer cursor to indicate it's clickable */
+        padding-left: 10px; /* Space between "Order" and "T&C" */
+      }
+      /* Hover effect for Shop T&C text */
+      .shop-tc-text:hover {
+        color: #24252b; /* Color change on hover */
+      }
+      /* Links style */
+      .t7c-links {
+        color: red; /* Set the link text color to red */
+        text-decoration: none; /* Remove underline */
+      }
+      .t7c-links:visited {
+        color: red; /* Set visited links to red as well */
+      }
+      .t7c-links:hover {
+        text-decoration: underline; /* Add underline on hover */
+      }
+      /* Responsive Design for Mobile */
+      @media screen and (max-width: 500px) {
+        page-title {
+          font-size: 48px;
+        }
+        titles {
+          font-size: 16px;
+        }
+        tandcfooter {
+          font-size: 10px;
+        }
+      } 
     </style>
     <!--<style>
       body {
@@ -238,6 +345,16 @@
       
       renderCart();
     </script>
-  
+    <br><br><br><br><br><br>
+    <tandcfooter>
+       <span class="footer-text">shop.donalogaora.com </span>
+          <a href="https://shop.donalogaora.com/terms-and-conditions" class="footer-tc-text" target="_blank" rel="noopener noreferrer">T&Cs</a><br>
+       <span class="footer-text">© 2025 
+          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>. All Rights Reserved.
+       </span><br>
+       <span class="footer-text">Designed by 
+          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
+       </span>
+    </tandcfooter>
   </body>
 </html>
