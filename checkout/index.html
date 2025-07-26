@@ -317,16 +317,12 @@
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const BACKEND_URL = 'https://shop-api.donalogaora.com';
     
-      async function fetchPostage() {
+      async function fetchPostage(subtotal) {
         try {
-          const orderItems = cart.map(item => ({
-            productId: item.id,
-            quantity: item.qty
-          }));
-          const response = await fetch(`${BACKEND_URL}/api/postage`, {
+          const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: orderItems })
+            body: JSON.stringify({ subtotal })
           });
           const data = await response.json();
           return data.postage ?? 0;
@@ -335,7 +331,7 @@
           return 0;
         }
       }
-      
+    
       async function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
         const subtotalEl = document.querySelector('#cart-total'); // subtotal
@@ -370,7 +366,7 @@
           subtotal += item.price * item.qty;
         });
     
-        const postage = await fetchPostage();
+        const postage = await fetchPostage(subtotal);
         const total = subtotal + postage;
     
         subtotalEl.textContent = subtotal.toFixed(2);
@@ -395,13 +391,7 @@
             productId: item.id,
             quantity: item.qty
           }));
-          
-          const response = await fetch(`${BACKEND_URL}/api/postage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: orderItems })
-          });
-              
+    
           return fetch(`${BACKEND_URL}/api/create-order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
