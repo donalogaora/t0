@@ -374,8 +374,12 @@
             <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
             <div class="item-details">
               <div class="product-description-bold">${item.name}</div>
-              <div class="product-description">Color: ${item.color}</div>
-              <div class="product-description">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
+              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 10px 0;">
+                Color: ${item.color}
+              </div>
+              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 10px 0;">
+                Price: €${item.price.toFixed(2)} x ${item.qty}
+              </div>
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
