@@ -366,7 +366,7 @@
           subtotal += item.price * item.qty;
         });
     
-        const postage = await fetchPostage(subtotal);
+        const postage = await fetchPostage();
         const total = subtotal + postage;
     
         subtotalEl.textContent = subtotal.toFixed(2);
