@@ -364,22 +364,21 @@
       function calculateTotal() {
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
       }
-  
       function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
         const cartTotalEl = document.getElementById('cart-total');
-  
+      
         if (!cartItemsContainer || !cartTotalEl) return;
-  
+      
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
           cartTotalEl.textContent = '0.00';
           return;
         }
-  
+      
         cartItemsContainer.innerHTML = '';
         let total = 0;
-  
+      
         cart.forEach(item => {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -391,9 +390,12 @@
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
-        cartTotalEl.textContent = total.toFixed(2);
-      }
-  
+          cartItemsContainer.appendChild(li);  // ✅ add item to DOM
+          total += item.price * item.qty;      // ✅ accumulate total
+        });
+      
+        cartTotalEl.textContent = total.toFixed(2); // ✅ display total after loop
+      }            
       // Handle Remove button clicks with event delegation
       document.getElementById('cart-items').addEventListener('click', (event) => {
         if (event.target.classList.contains('remove-btn')) {
