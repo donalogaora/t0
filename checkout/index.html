@@ -79,7 +79,7 @@
 
   <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const BACKEND_URL = 'https://shop-api.donalogaora.com:3000';
+    const BACKEND_URL = 'https://shop-api.donalogaora.com';
 
     function calculateTotal() {
       return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
