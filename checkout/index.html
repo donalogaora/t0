@@ -1,186 +1,131 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
-  <title>Shop Checkout | Dónal Ó Gaora</title>
-
-  <!-- Favicon Links -->
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon.ico/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon.ico/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon.ico/favicon-16x16.png" />
-  <link rel="manifest" href="../assets/favicon.ico/site.webmanifest" />
-  <link rel="icon" href="../assets/favicon.ico/favicon.ico" type="image/x-icon" />
-
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
-    .cart {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    li {
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    li img {
-      width: 60px;
-      height: auto;
-      margin-right: 12px;
-      border-radius: 4px;
-    }
-    .item-details {
-      flex: 1;
-    }
-    .remove-btn {
-      background: #c62828;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-left: 12px;
-      height: 32px;
-    }
-    .empty-message {
-      text-align: center;
-      padding: 40px;
-    }
-    #paypal-button-container {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Load PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
-
-  <div class="cart">
-    <h2>Your Cart</h2>
-    <ul id="cart-items"></ul>
-    <p><strong>Total: €<span id="cart-total">0.00</span></strong></p>
-  </div>
-
-  <!-- PayPal button container -->
-  <div id="paypal-button-container"></div>
-
-  <script>
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const BACKEND_URL = 'https://shop-api.donalogaora.com';
-
-    function calculateTotal() {
-      return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
-    }
-
-    function renderCart() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartTotalEl = document.getElementById('cart-total');
-
-      if (!cartItemsContainer || !cartTotalEl) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-        cartTotalEl.textContent = '0.00';
-        return;
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Checkout | Dónal Ó Gaora</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon.ico/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon.ico/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon.ico/favicon-16x16.png" />
+    <link rel="manifest" href="../assets/favicon.ico/site.webmanifest" />
+    <link rel="icon" href="../assets/favicon.ico/favicon.ico" type="image/x-icon" />
+    <link href="../style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  
+    <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
+  
+    <div class="cart">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <p><strong>Total: €<span id="cart-total">0.00</span></strong></p>
+    </div>
+  
+    <div id="paypal-button-container"></div>
+  
+    <script>
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const BACKEND_URL = 'https://shop-api.donalogaora.com';
+  
+      function calculateTotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
       }
-
-      cartItemsContainer.innerHTML = '';
-      let total = 0;
-
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
-          <div class="item-details">
-            <strong>${item.name}</strong><br>
-            Color: ${item.color}<br>
-            Price: €${item.price.toFixed(2)} x ${item.qty}
-          </div>
-          <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
-        `;
-        cartItemsContainer.appendChild(li);
-        total += item.price * item.qty;
+  
+      function renderCart() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalEl = document.getElementById('cart-total');
+  
+        if (!cartItemsContainer || !cartTotalEl) return;
+  
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
+          cartTotalEl.textContent = '0.00';
+          return;
+        }
+  
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+  
+        cart.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
+            <div class="item-details">
+              <strong>${item.name}</strong><br>
+              Color: ${item.color}<br>
+              Price: €${item.price.toFixed(2)} x ${item.qty}
+            </div>
+            <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
+          `;
+          cartItemsContainer.appendChild(li);
+          total += item.price * item.qty;
+        });
+  
+        cartTotalEl.textContent = total.toFixed(2);
+      }
+  
+      // Handle Remove button clicks with event delegation
+      document.getElementById('cart-items').addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-btn')) {
+          const id = event.target.getAttribute('data-id');
+          const color = event.target.getAttribute('data-color');
+  
+          // Remove item matching id and color from cart
+          cart = cart.filter(item => !(item.id === id && item.color === color));
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
       });
-
-      cartTotalEl.textContent = total.toFixed(2);
-    }
-
-    // Handle Remove button clicks with event delegation
-    document.getElementById('cart-items').addEventListener('click', (event) => {
-      if (event.target.classList.contains('remove-btn')) {
-        const id = event.target.getAttribute('data-id');
-        const color = event.target.getAttribute('data-color');
-
-        // Remove item matching id and color from cart
-        cart = cart.filter(item => !(item.id === id && item.color === color));
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-      }
-    });
-    
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        const orderItems = cart.map(item => ({
-          productId: item.id,
-          quantity: item.qty
-        }));
-    
-        return fetch(`${BACKEND_URL}/api/create-order`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: orderItems })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (!data.id) throw new Error('No order ID from backend');
-          return data.id;
-        });
-      },
-    
-      onApprove: function(data) {
-        return fetch(`${BACKEND_URL}/api/capture-order`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: data.orderID })
-        })
-        .then(res => res.json())
-        .then(details => {
-          if (details.status === 'COMPLETED') {
-            alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
-            localStorage.removeItem('cart');
-            window.location.href = `../thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
-          } else {
-            alert('Payment not completed');
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert('Payment failed. Please try again.');
-        });
-      },
-    
-      onError: function(err) {
-        console.error('PayPal error', err);
-        alert('An error occurred with PayPal.');
-      }
-    }).render('#paypal-button-container');
-    
-    // Initial render on page load
-    renderCart();
-  </script>
-
-</body>
+      
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          const orderItems = cart.map(item => ({
+            productId: item.id,
+            quantity: item.qty
+          }));
+      
+          return fetch(`${BACKEND_URL}/api/create-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: orderItems })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (!data.id) throw new Error('No order ID from backend');
+            return data.id;
+          });
+        },
+      
+        onApprove: function(data) {
+          return fetch(`${BACKEND_URL}/api/capture-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: data.orderID })
+          })
+          .then(res => res.json())
+          .then(details => {
+            if (details.status === 'COMPLETED') {
+              alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
+              localStorage.removeItem('cart');
+              window.location.href = `thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
+            } else {
+              alert('Payment not completed');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Payment failed. Please try again.');
+          });
+        },
+      
+        onError: function(err) {
+          console.error('PayPal error', err);
+          alert('An error occurred with PayPal.');
+        }
+      }).render('#paypal-button-container');
+      
+      renderCart();
+    </script>
+  
+  </body>
 </html>
