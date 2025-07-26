@@ -129,7 +129,7 @@
       footer {
         font-size: 0; /* Eliminate gaps between inline-block elements */
       }
-
+      
       footer .footer-text, footer .footer-tc-text, footer .designer {
         font-size: 10px; /* Reset font size for elements to desired size */
       }
@@ -188,16 +188,16 @@
         gap: 10px;
         align-items: center;
       }
-
+      
       .nav-list li {
         display: inline-block;
       }
-
+      
       .nav-item {
         display: flex;
         align-items: center;
       }
-
+      
       .nav-link, .page-button {
         display: block;
         color: red;
@@ -210,25 +210,25 @@
         font-weight: bold;
         margin: 0.3125rem; /* Responsive margin */
       }
-
+      
       .page-button {
         background-color: #5d5d5d;
         color: #ffffff;
       }
-
+      
       .nav-link:hover {
         background-color: red;
         color: white;
         box-shadow: 0.3125rem 0.3125rem 0.9375rem white; /* Adjusted shadow for hover */
       }
-
+      
       @media screen and (max-width: 1024px) {
         .nav-link, .page-button {
           font-size: 0.875rem; /* Slightly smaller for tablets */
           padding: 0.5rem 1rem; 
         }
       }
-
+      
       @media screen and (max-width: 500px) {
         .nav-link, .page-button {
           font-size: 0.75rem; /* Smaller for phones */
@@ -251,7 +251,7 @@
         /*font-weight: bold; /* Bold text */
         color: #6e6d68; /* Transparent fill color */
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
-        margin: 10px 0; /* Space around the title */
+        margin: 5px 0; /* Space around the title */
       }
 
 
@@ -263,14 +263,21 @@
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin: 10px 0; /* Space around the title */
       }
-
+      
       /* Total styling */
-      .cart-postage-label {
-        font-size: 18px; /* Adjusted size to 20px */
+      .cart-subtotal-label {
+        font-size: 17px; /* Adjusted size to 20px */
         font-weight: bold !important; /* Force bold text */
         color: #6e6d68; /* Transparent fill color */
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
-        margin-right: 10px; /* Control spacing between price and button */
+        margin-right: 8px; /* Control spacing between price and button */
+      }
+      .cart-postage-label {
+        font-size: 17px; /* Adjusted size to 20px */
+        font-weight: bold !important; /* Force bold text */
+        color: #6e6d68; /* Transparent fill color */
+        -webkit-text-stroke: 1px #24252b; /* Outline effect */
+        margin-right: 8px; /* Control spacing between price and button */
       }
       .cart-total-label {
         font-size: 20px; /* Adjusted size to 20px */
@@ -278,6 +285,7 @@
         color: #6e6d68; /* Transparent fill color */
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin-right: 10px; /* Control spacing between price and button */
+        text-align: center;
       }
     </style>
     <!--<style>
@@ -350,7 +358,6 @@
     <div class="cart">
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
-      <p class="cart-postage-label">Postage: €<span id="cart-postage">0.00</span></p>
       <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
     </div>
     <div id="paypal-button-container"></div>
@@ -360,59 +367,19 @@
   
       function calculateTotal() {
         return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
-      
-      let postage = 0;
-      
-      async function fetchPostage() {
-        if (cart.length === 0) {
-          postage = 0;
-          updatePostageAndTotal();
-          return;
-        }
-      
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              items: cart.map(item => ({
-                productId: item.id,
-                quantity: item.qty
-              }))
-            })
-          });
-          const data = await response.json();
-          postage = data.postage || 0;
-        } catch (error) {
-          console.error('Failed to fetch postage:', error);
-          postage = 0; // fallback
-        }
-        updatePostageAndTotal();
       }
-      
-      function updatePostageAndTotal() {
-        document.getElementById('cart-postage').textContent = postage.toFixed(2);
-      
-        const productsTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const total = productsTotal + postage;
-        document.getElementById('cart-total').textContent = total.toFixed(2);
-      }
-      
       function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
         const cartTotalEl = document.getElementById('cart-total');
-
+      
         if (!cartItemsContainer || !cartTotalEl) return;
-        if (!cartItemsContainer) return;
-
+      
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
           cartTotalEl.textContent = '0.00';
-          postage = 0;
-          updatePostageAndTotal();
           return;
         }
-
+      
         cartItemsContainer.innerHTML = '';
         let total = 0;
       
@@ -422,10 +389,10 @@
             <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
             <div class="item-details">
               <div class="product-description-bold">${item.name}</div>
-              <div style="font-weight: bold; font-size: 14px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 7px 0;">
+              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 5px 0;">
                 Color: ${item.color}
               </div>
-              <div style="font-weight: bold; font-size: 14px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 7px 0;">
+              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 5px 0;">
                 Price: €${item.price.toFixed(2)} x ${item.qty}
               </div>
             </div>
@@ -433,29 +400,23 @@
           `;
           cartItemsContainer.appendChild(li);  // ✅ add item to DOM
           total += item.price * item.qty;      // ✅ accumulate total
-          cartItemsContainer.appendChild(li);
         });
-
+      
         cartTotalEl.textContent = total.toFixed(2); // ✅ display total after loop
       }            
       // Handle Remove button clicks with event delegation
-        fetchPostage(); // fetch postage each time cart changes
-      }
-      
-      // Remove button handler stays the same
       document.getElementById('cart-items').addEventListener('click', (event) => {
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
   
           // Remove item matching id and color from cart
-      
           cart = cart.filter(item => !(item.id === id && item.color === color));
           localStorage.setItem('cart', JSON.stringify(cart));
           renderCart();
         }
       });
-
+      
       paypal.Buttons({
         createOrder: function(data, actions) {
           const orderItems = cart.map(item => ({
@@ -503,7 +464,6 @@
         }
       }).render('#paypal-button-container');
       
-      // Initialize rendering
       renderCart();
     </script>
     <br><br><br><br><br><br>
