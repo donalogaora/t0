@@ -265,6 +265,13 @@
       }
       
       /* Total styling */
+      .cart-postage-label {
+        font-size: 18px; /* Adjusted size to 20px */
+        font-weight: bold !important; /* Force bold text */
+        color: #6e6d68; /* Transparent fill color */
+        -webkit-text-stroke: 1px #24252b; /* Outline effect */
+        margin-right: 10px; /* Control spacing between price and button */
+      }
       .cart-total-label {
         font-size: 20px; /* Adjusted size to 20px */
         font-weight: bold !important; /* Force bold text */
@@ -343,31 +350,64 @@
     <div class="cart">
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
+      <p class="cart-postage-label">Postage: €<span id="cart-postage">0.00</span></p>
       <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
     </div>
     <div id="paypal-button-container"></div>
     <script>
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const BACKEND_URL = 'https://shop-api.donalogaora.com';
-  
-      function calculateTotal() {
-        return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
+      
+      let postage = 0;
+      
+      async function fetchPostage() {
+        if (cart.length === 0) {
+          postage = 0;
+          updatePostageAndTotal();
+          return;
+        }
+      
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: cart.map(item => ({
+                productId: item.id,
+                quantity: item.qty
+              }))
+            })
+          });
+          const data = await response.json();
+          postage = data.postage || 0;
+        } catch (error) {
+          console.error('Failed to fetch postage:', error);
+          postage = 0; // fallback
+        }
+        updatePostageAndTotal();
       }
+      
+      function updatePostageAndTotal() {
+        document.getElementById('cart-postage').textContent = postage.toFixed(2);
+      
+        const productsTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const total = productsTotal + postage;
+        document.getElementById('cart-total').textContent = total.toFixed(2);
+      }
+      
       function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
-        const cartTotalEl = document.getElementById('cart-total');
       
-        if (!cartItemsContainer || !cartTotalEl) return;
+        if (!cartItemsContainer) return;
       
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-          cartTotalEl.textContent = '0.00';
+          postage = 0;
+          updatePostageAndTotal();
           return;
         }
       
         cartItemsContainer.innerHTML = '';
-        let total = 0;
-      
         cart.forEach(item => {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -383,72 +423,25 @@
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
-          cartItemsContainer.appendChild(li);  // ✅ add item to DOM
-          total += item.price * item.qty;      // ✅ accumulate total
+          cartItemsContainer.appendChild(li);
         });
       
-        cartTotalEl.textContent = total.toFixed(2); // ✅ display total after loop
-      }            
-      // Handle Remove button clicks with event delegation
+        fetchPostage(); // fetch postage each time cart changes
+      }
+      
+      // Remove button handler stays the same
       document.getElementById('cart-items').addEventListener('click', (event) => {
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
-  
-          // Remove item matching id and color from cart
+      
           cart = cart.filter(item => !(item.id === id && item.color === color));
           localStorage.setItem('cart', JSON.stringify(cart));
           renderCart();
         }
       });
       
-      paypal.Buttons({
-        createOrder: function(data, actions) {
-          const orderItems = cart.map(item => ({
-            productId: item.id,
-            quantity: item.qty
-          }));
-      
-          return fetch(`${BACKEND_URL}/api/create-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: orderItems })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.id) throw new Error('No order ID from backend');
-            return data.id;
-          });
-        },
-      
-        onApprove: function(data) {
-          return fetch(`${BACKEND_URL}/api/capture-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId: data.orderID })
-          })
-          .then(res => res.json())
-          .then(details => {
-            if (details.status === 'COMPLETED') {
-              alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
-              localStorage.removeItem('cart');
-              window.location.href = `thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
-            } else {
-              alert('Payment not completed');
-            }
-          })
-          .catch(err => {
-            console.error(err);
-            alert('Payment failed. Please try again.');
-          });
-        },
-      
-        onError: function(err) {
-          console.error('PayPal error', err);
-          alert('An error occurred with PayPal.');
-        }
-      }).render('#paypal-button-container');
-      
+      // Initialize rendering
       renderCart();
     </script>
     <br><br><br><br><br><br>
