@@ -129,7 +129,7 @@
       footer {
         font-size: 0; /* Eliminate gaps between inline-block elements */
       }
-      
+
       footer .footer-text, footer .footer-tc-text, footer .designer {
         font-size: 10px; /* Reset font size for elements to desired size */
       }
@@ -188,16 +188,16 @@
         gap: 10px;
         align-items: center;
       }
-      
+
       .nav-list li {
         display: inline-block;
       }
-      
+
       .nav-item {
         display: flex;
         align-items: center;
       }
-      
+
       .nav-link, .page-button {
         display: block;
         color: red;
@@ -210,25 +210,25 @@
         font-weight: bold;
         margin: 0.3125rem; /* Responsive margin */
       }
-      
+
       .page-button {
         background-color: #5d5d5d;
         color: #ffffff;
       }
-      
+
       .nav-link:hover {
         background-color: red;
         color: white;
         box-shadow: 0.3125rem 0.3125rem 0.9375rem white; /* Adjusted shadow for hover */
       }
-      
+
       @media screen and (max-width: 1024px) {
         .nav-link, .page-button {
           font-size: 0.875rem; /* Slightly smaller for tablets */
           padding: 0.5rem 1rem; 
         }
       }
-      
+
       @media screen and (max-width: 500px) {
         .nav-link, .page-button {
           font-size: 0.75rem; /* Smaller for phones */
@@ -263,7 +263,7 @@
         -webkit-text-stroke: 1px #24252b; /* Outline effect */
         margin: 10px 0; /* Space around the title */
       }
-      
+
       /* Total styling */
       .cart-postage-label {
         font-size: 18px; /* Adjusted size to 20px */
@@ -357,6 +357,9 @@
     <script>
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const BACKEND_URL = 'https://shop-api.donalogaora.com';
+  
+      function calculateTotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
       
       let postage = 0;
       
@@ -397,17 +400,22 @@
       
       function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
-      
+        const cartTotalEl = document.getElementById('cart-total');
+
+        if (!cartItemsContainer || !cartTotalEl) return;
         if (!cartItemsContainer) return;
-      
+
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
+          cartTotalEl.textContent = '0.00';
           postage = 0;
           updatePostageAndTotal();
           return;
         }
-      
+
         cartItemsContainer.innerHTML = '';
+        let total = 0;
+      
         cart.forEach(item => {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -423,9 +431,14 @@
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
+          cartItemsContainer.appendChild(li);  // ✅ add item to DOM
+          total += item.price * item.qty;      // ✅ accumulate total
           cartItemsContainer.appendChild(li);
         });
-      
+
+        cartTotalEl.textContent = total.toFixed(2); // ✅ display total after loop
+      }            
+      // Handle Remove button clicks with event delegation
         fetchPostage(); // fetch postage each time cart changes
       }
       
@@ -434,12 +447,61 @@
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
+  
+          // Remove item matching id and color from cart
       
           cart = cart.filter(item => !(item.id === id && item.color === color));
           localStorage.setItem('cart', JSON.stringify(cart));
           renderCart();
         }
       });
+
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          const orderItems = cart.map(item => ({
+            productId: item.id,
+            quantity: item.qty
+          }));
+      
+          return fetch(`${BACKEND_URL}/api/create-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: orderItems })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (!data.id) throw new Error('No order ID from backend');
+            return data.id;
+          });
+        },
+      
+        onApprove: function(data) {
+          return fetch(`${BACKEND_URL}/api/capture-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: data.orderID })
+          })
+          .then(res => res.json())
+          .then(details => {
+            if (details.status === 'COMPLETED') {
+              alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
+              localStorage.removeItem('cart');
+              window.location.href = `thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
+            } else {
+              alert('Payment not completed');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Payment failed. Please try again.');
+          });
+        },
+      
+        onError: function(err) {
+          console.error('PayPal error', err);
+          alert('An error occurred with PayPal.');
+        }
+      }).render('#paypal-button-container');
       
       // Initialize rendering
       renderCart();
