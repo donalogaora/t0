@@ -245,8 +245,7 @@
         position: relative; /* Optional: allows stacking properly */
         z-index: 1000; /* Make sure it’s on top if needed */
       }
-      /* Product name/title style */
-      .product-title {
+      .cart-header, .product-title {
         font-size: 24px; /* Text size */
         font-weight: bold; /* Bold text */
         color: #6e6d68; /* Transparent fill color */
@@ -254,9 +253,20 @@
         text-align: center; /* Center the text horizontally */
         margin: 10px 0; /* Space around the title */
       }
-      
+        }
       /* Description below title */
       .product-description {
+        font-weight: normal;
+        font-size: 18px; /* Text size */
+        /*font-weight: bold; /* Bold text */
+        color: #6e6d68; /* Transparent fill color */
+        -webkit-text-stroke: 1px #24252b; /* Outline effect */
+        text-align: center; /* Center the text horizontally */
+        margin: 10px 0; /* Space around the title */
+      }
+
+      .product-description-bold {
+        font-weight: bold;
         font-size: 18px; /* Text size */
         /*font-weight: bold; /* Bold text */
         color: #6e6d68; /* Transparent fill color */
@@ -342,7 +352,7 @@
     <br><br>
     <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
     <div class="cart">
-      <h2>Your Cart</h2>
+      <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
       <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
     </div>
@@ -375,16 +385,12 @@
           li.innerHTML = `
             <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
             <div class="item-details">
-              <strong>${item.name}</strong><br>
-              Color: ${item.color}<br>
-              Price: €${item.price.toFixed(2)} x ${item.qty}
+              <div class="product-description-bold">${item.name}</div>
+              <div class="product-description">Color: ${item.color}</div>
+              <div class="product-description">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
-          cartItemsContainer.appendChild(li);
-          total += item.price * item.qty;
-        });
-  
         cartTotalEl.textContent = total.toFixed(2);
       }
   
