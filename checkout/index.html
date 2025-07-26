@@ -125,6 +125,44 @@
       }
     }).render('#paypal-button-container');
 
+    function renderCart() {
+      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartTotalEl = document.getElementById('cart-total');
+      
+      if (!cartItemsContainer || !cartTotalEl) return;
+      
+      if (cartItems.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
+        cartTotalEl.textContent = '0.00';
+        return;
+      }
+      
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+      
+      cartItems.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
+          <div class="item-details">
+            <strong>${item.name}</strong><br>
+            Color: ${item.color}<br>
+            Price: €${item.price.toFixed(2)} x ${item.qty}
+          </div>
+        `;
+        cartItemsContainer.appendChild(li);
+        
+        total += item.price * item.qty;
+      });
+      
+      cartTotalEl.textContent = total.toFixed(2);
+    }
+    
+    // Call this when page loads
+    renderCart();
+
+
   </script>
 
 </body>
