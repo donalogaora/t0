@@ -633,17 +633,23 @@ colour-table {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
+  background-color: white; /* ✅ Make background solid */
+  max-width: 600px;         /* ✅ Prevent stretching too wide */
+  margin: 0 auto;           /* ✅ Center the cart */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds nice shadow */
 }
 
 ul {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 li {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Wraps content if it's too long */
 }
 
 li img {
@@ -676,4 +682,7 @@ li img {
 
 #paypal-button-container {
   margin-top: 20px;
+  display: block;
+  width: 100%; /* Ensure it doesn't float out */
 }
+
