@@ -319,10 +319,14 @@
     
       async function fetchPostage() {
         try {
+          const orderItems = cart.map(item => ({
+            productId: item.id,
+            quantity: item.qty
+          }));
           const response = await fetch(`${BACKEND_URL}/api/postage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: cart })
+            body: JSON.stringify({ items: orderItems })
           });
           const data = await response.json();
           return data.postage ?? 0;
@@ -391,7 +395,13 @@
             productId: item.id,
             quantity: item.qty
           }));
-    
+          
+          const response = await fetch(`${BACKEND_URL}/api/postage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: orderItems })
+          });
+              
           return fetch(`${BACKEND_URL}/api/create-order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
