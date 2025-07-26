@@ -76,28 +76,29 @@
   <div id="paypal-button-container"></div>
 
   <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const BACKEND_URL = 'http://shop-api.donalogaora.com:3000';
+    
     function calculateTotal() {
       return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
     }
     
     paypal.Buttons({
       createOrder: function(data, actions) {
-        return fetch('http://shop-api.donalogaora.com:3000/api/create-order', {
+        return fetch(`${BACKEND_URL}/api/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ total: calculateTotal() })
         })
         .then(res => res.json())
         .then(data => {
-          if (!data.id) {
-            throw new Error('No order ID from backend');
-          }
-          return data.id; // PayPal order ID
+          if (!data.id) throw new Error('No order ID from backend');
+          return data.id;
         });
       },
     
       onApprove: function(data) {
-        return fetch('http://your-backend-url:3000/api/capture-order', {
+        return fetch(`${BACKEND_URL}/api/capture-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderId: data.orderID })
@@ -124,10 +125,6 @@
       }
     }).render('#paypal-button-container');
 
-
-    // Init
-    renderCart();
-    renderPayPal();
   </script>
 
 </body>
