@@ -308,74 +308,90 @@
     <div class="cart">
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
-      <p class="cart-subtotal-label">Subotal: €<span id="cart-total">0.00</span></p>
-      <p class="cart-postage-label">Postage: €<span id="cart-total">0.00</span></p>
-      <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
+      <p class="cart-subtotal-label">Subtotal: €<span id="cart-total">0.00</span></p>
+      <p class="cart-postage-label">Postage: €<span>0.00</span></p>
+      <p class="cart-total-label">Total: €<span>0.00</span></p>
     </div>
     <div id="paypal-button-container"></div>
     <script>
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const BACKEND_URL = 'https://shop-api.donalogaora.com';
-  
-      function calculateTotal() {
-        return cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
+    
+      async function fetchPostage(subtotal) {
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subtotal })
+          });
+          const data = await response.json();
+          return data.postage ?? 0;
+        } catch (err) {
+          console.error('Postage fetch failed', err);
+          return 0;
+        }
       }
-      function renderCart() {
+    
+      async function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
-        const cartTotalEl = document.getElementById('cart-total');
-      
-        if (!cartItemsContainer || !cartTotalEl) return;
-      
+        const subtotalEl = document.querySelector('#cart-total'); // subtotal
+        const postageEl = document.querySelector('.cart-postage-label span');
+        const totalEl = document.querySelector('.cart-total-label span');
+    
+        if (!cartItemsContainer) return;
+    
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-          cartTotalEl.textContent = '0.00';
+          subtotalEl.textContent = '0.00';
+          postageEl.textContent = '0.00';
+          totalEl.textContent = '0.00';
           return;
         }
-      
+    
         cartItemsContainer.innerHTML = '';
-        let total = 0;
-      
+        let subtotal = 0;
+    
         cart.forEach(item => {
           const li = document.createElement('li');
           li.innerHTML = `
             <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
             <div class="item-details">
               <div class="product-description-bold">${item.name}</div>
-              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 5px 0;">
-                Color: ${item.color}
-              </div>
-              <div style="font-weight: bold; font-size: 15px; color: #6e6d68; -webkit-text-stroke: 1px #24252b; margin: 5px 0;">
-                Price: €${item.price.toFixed(2)} x ${item.qty}
-              </div>
+              <div class="product-description">Color: ${item.color}</div>
+              <div class="product-description">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
           `;
-          cartItemsContainer.appendChild(li);  // ✅ add item to DOM
-          total += item.price * item.qty;      // ✅ accumulate total
+          cartItemsContainer.appendChild(li);
+          subtotal += item.price * item.qty;
         });
-      
-        cartTotalEl.textContent = total.toFixed(2); // ✅ display total after loop
-      }            
-      // Handle Remove button clicks with event delegation
+    
+        const postage = await fetchPostage(subtotal);
+        const total = subtotal + postage;
+    
+        subtotalEl.textContent = subtotal.toFixed(2);
+        postageEl.textContent = postage.toFixed(2);
+        totalEl.textContent = total.toFixed(2);
+      }
+    
       document.getElementById('cart-items').addEventListener('click', (event) => {
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
-  
-          // Remove item matching id and color from cart
+    
           cart = cart.filter(item => !(item.id === id && item.color === color));
           localStorage.setItem('cart', JSON.stringify(cart));
           renderCart();
         }
       });
-      
+    
       paypal.Buttons({
         createOrder: function(data, actions) {
           const orderItems = cart.map(item => ({
             productId: item.id,
             quantity: item.qty
           }));
-      
+    
           return fetch(`${BACKEND_URL}/api/create-order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -387,7 +403,7 @@
             return data.id;
           });
         },
-      
+    
         onApprove: function(data) {
           return fetch(`${BACKEND_URL}/api/capture-order`, {
             method: 'POST',
@@ -409,13 +425,13 @@
             alert('Payment failed. Please try again.');
           });
         },
-      
+    
         onError: function(err) {
           console.error('PayPal error', err);
           alert('An error occurred with PayPal.');
         }
       }).render('#paypal-button-container');
-      
+    
       renderCart();
     </script>
     <br><br><br><br><br><br>
