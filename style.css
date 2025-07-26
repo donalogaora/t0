@@ -626,3 +626,54 @@ colour-table {
         height: 40px;
     }
 }
+
+/*shop.donalogaora.com/cart*/
+.cart {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+li img {
+  width: 60px;
+  height: auto;
+  margin-right: 12px;
+  border-radius: 4px;
+}
+
+.item-details {
+  flex: 1;
+}
+
+.remove-btn {
+  background: #c62828;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 12px;
+  height: 32px;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 40px;
+}
+
+#paypal-button-container {
+  margin-top: 20px;
+}
