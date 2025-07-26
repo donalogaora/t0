@@ -178,6 +178,63 @@
           font-size: 10px;
         }
       } 
+      /* Ensure all nav items use consistent layout */
+      .nav-list {
+        display: flex;
+        flex-direction: row-reverse;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 10px;
+        align-items: center;
+      }
+      
+      .nav-list li {
+        display: inline-block;
+      }
+      
+      .nav-item {
+        display: flex;
+        align-items: center;
+      }
+      
+      .nav-link, .page-button {
+        display: block;
+        color: red;
+        text-align: center;
+        padding: 0.625rem 1.25rem; /* Proportional padding */
+        text-decoration: none;
+        border-radius: 0.3125rem; /* Rounded corners */
+        box-shadow: 0.3125rem 0.3125rem 0.625rem red; /* Responsive shadow */
+        background-color: white;
+        font-weight: bold;
+        margin: 0.3125rem; /* Responsive margin */
+      }
+      
+      .page-button {
+        background-color: #5d5d5d;
+        color: #ffffff;
+      }
+      
+      .nav-link:hover {
+        background-color: red;
+        color: white;
+        box-shadow: 0.3125rem 0.3125rem 0.9375rem white; /* Adjusted shadow for hover */
+      }
+      
+      @media screen and (max-width: 1024px) {
+        .nav-link, .page-button {
+          font-size: 0.875rem; /* Slightly smaller for tablets */
+          padding: 0.5rem 1rem; 
+        }
+      }
+      
+      @media screen and (max-width: 500px) {
+        .nav-link, .page-button {
+          font-size: 0.75rem; /* Smaller for phones */
+          padding: 0.375rem 0.75rem; 
+        }
+      }
     </style>
     <!--<style>
       body {
@@ -231,17 +288,27 @@
     </style>-->
   </head>
   <body>
-  
+    <div class="nav-wrapper">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="https://shop.donalogaora.com/checkout" class="page-button">Cart</a>
+        </li>
+        <li class="nav-item">
+          <a href="https://shop.donalogaora.com" class="nav-link">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a href="https://www.donalogaora.com" class="nav-link">Home</a>
+        </li>
+      </ul>
+    </div>
+    <br><br>
     <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
-  
     <div class="cart">
       <h2>Your Cart</h2>
       <ul id="cart-items"></ul>
       <p><strong>Total: €<span id="cart-total">0.00</span></strong></p>
     </div>
-  
     <div id="paypal-button-container"></div>
-  
     <script>
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const BACKEND_URL = 'https://shop-api.donalogaora.com';
