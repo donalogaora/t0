@@ -130,13 +130,18 @@
         renderCart();
       }
     });
-
+    
     paypal.Buttons({
       createOrder: function(data, actions) {
+        const orderItems = cart.map(item => ({
+          productId: item.id,
+          quantity: item.qty
+        }));
+    
         return fetch(`${BACKEND_URL}/api/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ total: calculateTotal() })
+          body: JSON.stringify({ items: orderItems })
         })
         .then(res => res.json())
         .then(data => {
@@ -144,7 +149,7 @@
           return data.id;
         });
       },
-
+    
       onApprove: function(data) {
         return fetch(`${BACKEND_URL}/api/capture-order`, {
           method: 'POST',
@@ -156,7 +161,7 @@
           if (details.status === 'COMPLETED') {
             alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
             localStorage.removeItem('cart');
-            window.location.href = `thank-you.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
+            window.location.href = `../thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
           } else {
             alert('Payment not completed');
           }
@@ -166,13 +171,13 @@
           alert('Payment failed. Please try again.');
         });
       },
-
+    
       onError: function(err) {
         console.error('PayPal error', err);
         alert('An error occurred with PayPal.');
       }
     }).render('#paypal-button-container');
-
+    
     // Initial render on page load
     renderCart();
   </script>
