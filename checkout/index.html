@@ -327,16 +327,12 @@
     
       async function renderCart() {
         const cartItemsContainer = document.getElementById('cart-items');
-        const subtotalEl = document.querySelector('#cart-total'); // subtotal
-        const postageEl = document.querySelector('.cart-postage-label span');
         const totalEl = document.querySelector('.cart-total-label span');
     
         if (!cartItemsContainer) return;
     
         if (cart.length === 0) {
           cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-          subtotalEl.textContent = '0.00';
-          postageEl.textContent = '0.00';
           totalEl.textContent = '0.00';
           return;
         }
@@ -373,9 +369,7 @@
     
         const postage = await fetchPostage(subtotal);
         const total = subtotal + postage;
-    
-        subtotalEl.textContent = subtotal.toFixed(2);
-        postageEl.textContent = postage.toFixed(2);
+  
         totalEl.textContent = total.toFixed(2);
       }
     
