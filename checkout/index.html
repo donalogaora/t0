@@ -236,10 +236,14 @@
         }
       }
       .nav-wrapper {
-        width: 100%;
+        width: 100vw; /* Take up full screen width */
         display: flex;
-        justify-content: flex-end;
-        margin-bottom: 20px;
+        justify-content: flex-end; /* Push buttons to far right */
+        background: transparent; /* Or solid if you want */
+        padding: 10px 20px;
+        box-sizing: border-box;
+        position: relative; /* Optional: allows stacking properly */
+        z-index: 1000; /* Make sure it’s on top if needed */
       }
       .shop-card-title {
           font-size: 24px; /* Text size */
