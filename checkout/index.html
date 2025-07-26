@@ -288,56 +288,6 @@
         text-align: center;
       }
     </style>
-    <!--<style>
-      body {
-        font-family: sans-serif;
-        padding: 20px;
-        max-width: 700px;
-        margin: auto;
-      }
-      .cart {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-      }
-      ul {
-        list-style: none;
-        padding-left: 0;
-      }
-      li {
-        display: flex;
-        align-items: center;
-        margin-bottom: 16px;
-      }
-      li img {
-        width: 60px;
-        height: auto;
-        margin-right: 12px;
-        border-radius: 4px;
-      }
-      .item-details {
-        flex: 1;
-      }
-      .remove-btn {
-        background: #c62828;
-        color: white;
-        border: none;
-        padding: 6px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        margin-left: 12px;
-        height: 32px;
-      }
-      .empty-message {
-        text-align: center;
-        padding: 40px;
-      }
-      #paypal-button-container {
-        margin-top: 20px;
-      }
-    </style>-->
   </head>
   <body>
     <div class="nav-wrapper">
@@ -358,6 +308,8 @@
     <div class="cart">
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
+      <p class="cart-subtotal-label">Subotal: €<span id="cart-total">0.00</span></p>
+      <p class="cart-postage-label">Postage: €<span id="cart-total">0.00</span></p>
       <p class="cart-total-label">Total: €<span id="cart-total">0.00</span></p>
     </div>
     <div id="paypal-button-container"></div>
