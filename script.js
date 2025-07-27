@@ -1,105 +1,137 @@
-// Use absolute paths for images on main page
-const phoneStandImageElement = document.getElementById('toggle-image');
-const phoneStandImages = [
+// ==============================
+// Dynamic Image + Carousel Setup
+// ==============================
+
+const productImages = {
+  '1A': [
     '/assets/shop/phonestand_black.webp',
     '/assets/shop/phonestand_white.webp',
     '/assets/shop/phonestand_space_grey.webp',
     '/assets/shop/phonestand_dark_blue.webp',
     '/assets/shop/phonestand_red.webp',
     '/assets/shop/phonestand_orange.webp'
-];
-let phoneStandCurrentIndex = 0;
-let phoneStandCarouselInterval;
-let phoneStandIsCarouselActive = true;
-
-const soapCradleImageElement = document.getElementById('soap-toggle-image');
-const soapCradleImages = [
+  ],
+  '2A': [
     '/assets/shop/black_aquadry_soap_cradle.png',
     '/assets/shop/white_aquadry_soap_cradle.png',
     '/assets/shop/space_grey_aquadry_soap_cradle.png',
     '/assets/shop/blue_aquadry_soap_cradle.png',
     '/assets/shop/red_aquadry_soap_cradle.png',
     '/assets/shop/orange_aquadry_soap_cradle.png'
-];
-let soapCradleCurrentIndex = 0;
-let soapCradleCarouselInterval;
-let soapCradleIsCarouselActive = true;
+  ]
+  // Add more productId/image arrays here
+};
 
-function startPhoneStandCarousel() {
-    if (phoneStandIsCarouselActive) {
-        phoneStandCarouselInterval = setInterval(() => {
-            phoneStandImageElement.style.transition = "opacity 0.5s";
-            phoneStandImageElement.style.opacity = 0;
-            setTimeout(() => {
-                phoneStandCurrentIndex = (phoneStandCurrentIndex + 1) % phoneStandImages.length;
-                phoneStandImageElement.src = phoneStandImages[phoneStandCurrentIndex];
-                phoneStandImageElement.style.opacity = 1;
-            }, 500);  // 500ms fade out to fade in (was 50ms too quick)
-        }, 1500);
-    }
+const productCarousels = {}; // Stores interval, index, etc for each product
+
+function startCarousel(productId, imageElement) {
+  const carousel = productCarousels[productId];
+  if (!carousel || !carousel.isActive) return;
+
+  carousel.interval = setInterval(() => {
+    imageElement.style.transition = "opacity 0.5s";
+    imageElement.style.opacity = 0;
+
+    setTimeout(() => {
+      carousel.index = (carousel.index + 1) % carousel.images.length;
+      imageElement.onerror = () => {
+        console.warn(`Image failed to load: ${carousel.images[carousel.index]}`);
+        imageElement.src = carousel.images[0]; // fallback
+      };
+      imageElement.src = carousel.images[carousel.index];
+      imageElement.style.opacity = 1;
+    }, 500);
+  }, 1500);
 }
 
-function startSoapCradleCarousel() {
-    if (soapCradleIsCarouselActive) {
-        soapCradleCarouselInterval = setInterval(() => {
-            soapCradleImageElement.style.transition = "opacity 0.5s";
-            soapCradleImageElement.style.opacity = 0;
-            setTimeout(() => {
-                soapCradleCurrentIndex = (soapCradleCurrentIndex + 1) % soapCradleImages.length;
-                soapCradleImageElement.src = soapCradleImages[soapCradleCurrentIndex];
-                soapCradleImageElement.style.opacity = 1;
-            }, 500);
-        }, 1500);
-    }
-}
+// ==============================
+// Initialize Carousels
+// ==============================
 
-startPhoneStandCarousel();
-startSoapCradleCarousel();
+document.querySelectorAll('.shop-card').forEach(card => {
+  const productId = card.getAttribute('data-product-id');
+  const imageElement = card.querySelector('.shop-card-image');
+  const images = productImages[productId];
+  // Preload all carousel images for this product
+  images.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
 
-let selectedColor = ''; // Store selected color
 
-const colorCircles = document.querySelectorAll('.circle');
-const toggleImage = document.getElementById('toggle-image');
+  if (!images || !imageElement) return;
 
-colorCircles.forEach(circle => {
-    circle.addEventListener('click', () => {
-        selectedColor = circle.getAttribute('data-color');
+  productCarousels[productId] = {
+    index: 0,
+    isActive: true,
+    interval: null,
+    images,
+    imageElement
+  };
 
-        // Update image using consistent naming
-        toggleImage.src = `/assets/shop/phonestand_${selectedColor}.webp`;
-
-        // Stop carousel
-        clearInterval(phoneStandCarouselInterval);
-        phoneStandIsCarouselActive = false;
-        phoneStandImageElement.style.opacity = 1;
-
-        // Update selected circle styling
-        colorCircles.forEach(c => c.classList.remove('selected'));
-        circle.classList.add('selected');
-    });
+  imageElement.setAttribute('id', `product-image-${productId}`); // Assign dynamic ID
+  startCarousel(productId, imageElement);
 });
 
-const orderButtons = document.querySelectorAll('.shop-order-button');
+// ==============================
+// Handle Color Selections
+// ==============================
 
-orderButtons.forEach(orderButton => {
+document.querySelectorAll('.circle-container').forEach(container => {
+  const productId = container.getAttribute('data-product-id');
+  const carousel = productCarousels[productId];
+  if (!carousel) return;
+
+  const imageElement = carousel.imageElement;
+
+  container.querySelectorAll('.circle').forEach(circle => {
+    circle.addEventListener('click', () => {
+      const selectedColor = circle.getAttribute('data-color');
+      let imagePath;
+
+      if (productId === '1A') {
+        imagePath = `/assets/shop/phonestand_${selectedColor}.webp`;
+      } else {
+        imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.png`;
+      }
+
+      imageElement.src = imagePath;
+
+      clearInterval(carousel.interval);
+      carousel.isActive = false;
+      imageElement.style.opacity = 1;
+      imageElement.setAttribute('data-selected-color', selectedColor);
+
+      container.querySelectorAll('.circle').forEach(c => c.classList.remove('selected'));
+      circle.classList.add('selected');
+    });
+  });
+});
+
+// ==============================
+// Add to Cart (Per Product)
+// ==============================
+
+document.querySelectorAll('.shop-order-button').forEach(orderButton => {
   orderButton.addEventListener('click', function () {
     const productId = orderButton.getAttribute('data-product-id');
-    if (!productId) {
-      alert("Missing product ID.");
-      return;
-    }
-
-    const productName = getProductField(productId, 'product_name') || 'Unnamed Product';
-    const price = parseFloat(getProductField(productId, 'price')) || 0;
-    const imagePath = `../assets/shop/phonestand_${selectedColor}.webp`;
-    const color = selectedColor;
+    const imageElement = document.querySelector(`#product-image-${productId}`);
+    const color = imageElement?.getAttribute('data-selected-color');
 
     if (!color) {
       alert('Please select a color first!');
       return;
     }
 
+    const productName = getProductField(productId, 'product_name') || 'Unnamed Product';
+    const price = parseFloat(getProductField(productId, 'price')) || 0;
     const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    let imagePath;
+    if (productId === '1A') {
+      imagePath = `/assets/shop/phonestand_${color}.webp`;
+    } else {
+      imagePath = `/assets/shop/${color}_aquadry_soap_cradle.png`;
+    }
 
     const cartItem = {
       id: productId,
@@ -120,14 +152,16 @@ orderButtons.forEach(orderButton => {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartNav(); // Update icon count
+    updateCartNav();
     alert(`${formattedColor} ${productName} added to cart!`);
   });
 });
 
+// ==============================
+// Utility + Misc (Same as Before)
+// ==============================
 
-// Scroll to hash on load
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
   const hash = window.location.hash;
   if (hash) {
     const element = document.querySelector(hash);
@@ -137,53 +171,36 @@ window.addEventListener("load", function() {
   }
 });
 
-// Fix for soap order buttons - multiple elements
 document.querySelectorAll(".soap-order-button").forEach(button => {
   button.addEventListener("click", () => {
     window.location.href = "https://shop.donalogaora.com/all-products#aqua-dry-soap-cradle";
   });
 });
 
-// Grab the cart nav elements
 const cartNavItem = document.getElementById('cart-nav-item');
 const cartCountSpan = document.getElementById('cart-count');
 
-// Function to update cart display based on what's in localStorage
 function updateCartNav() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
 
   if (totalQty > 0) {
-    cartCountSpan.textContent = totalQty;  // update number in parentheses
-    cartNavItem.style.display = 'list-item';  // show the cart link
+    cartCountSpan.textContent = totalQty;
+    cartNavItem.style.display = 'list-item';
   } else {
-    cartNavItem.style.display = 'none';  // hide it if cart empty
+    cartNavItem.style.display = 'none';
   }
 }
 
-// Run on page load to check if there's anything in cart already
 updateCartNav();
-
-// When someone adds an item to the cart, update the nav
-orderButtons.forEach(orderButton => {
-  orderButton.addEventListener('click', function () {
-    // Your existing add-to-cart code here (which updates localStorage)...
-
-    // After adding item to cart, update the nav item
-    updateCartNav();
-  });
-});
-
-// Show the cart nav item when needed
 document.getElementById('cart-nav-item').classList.remove('hidden');
-
-// Optionally update cart count
 document.getElementById('cart-count').textContent = 2;
 
+// ==============================
+// Product Info Fetching
+// ==============================
 
-// ShopBackend API Pull
 const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
-
 const productsData = {};
 
 function normalizeKey(str) {
@@ -203,11 +220,7 @@ function updateDomFields() {
     const field = elem.getAttribute("data-field");
     const value = getProductField(id, field);
     if (value !== null) {
-      if (field.toLowerCase() === 'price') {
-        elem.textContent = `€${value}`;
-      } else {
-        elem.textContent = value;
-      }
+      elem.textContent = field.toLowerCase() === 'price' ? `€${value}` : value;
     }
   });
 }
@@ -218,8 +231,8 @@ function fetchAllProducts() {
     .then(flatData => {
       for (const [flatKey, value] of Object.entries(flatData)) {
         const [id, ...rest] = flatKey.split("_");
-        const keyRaw = rest.join("_"); // e.g. "product name"
-        const key = normalizeKey(keyRaw); // e.g. "product_name"
+        const keyRaw = rest.join("_");
+        const key = normalizeKey(keyRaw);
         const idNormalized = id.toLowerCase();
 
         if (!productsData[idNormalized]) productsData[idNormalized] = {};
@@ -232,5 +245,4 @@ function fetchAllProducts() {
     .catch(err => console.error("Failed to load products:", err));
 }
 
-// ✅ DOM must be ready
 document.addEventListener("DOMContentLoaded", fetchAllProducts);
