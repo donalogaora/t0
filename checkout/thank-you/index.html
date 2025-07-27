@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Thank You | Dónal Ó Gaora</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon.ico/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon.ico/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../../assets/favicon.ico/favicon-16x16.png" />
+    <link rel="manifest" href="../../assets/favicon.ico/site.webmanifest" />
+    <link rel="icon" href="../../assets/favicon.ico/favicon.ico" type="image/x-icon" />
         <style>
       html, body {
         margin: 0;
@@ -173,12 +178,19 @@
         tandcfooter {
           font-size: 10px;
         }
-      } 
+      }
+      .main-content {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+      }
       /* Ensure all nav items use consistent layout */
       .nav-wrapper {
+        width: 100vw; /* Full viewport width */
         display: flex;
         justify-content: flex-end;
-        margin-bottom: 20px;
+        padding: 10px 20px; /* Optional: space from edges */
+        box-sizing: border-box;
       }
       .nav-list {
         display: flex;
@@ -297,55 +309,57 @@
         </li>
       </ul>
     </div>
-    <br><br>
-
-    <div class="cart">
-      <script>
-        function getQueryParam(param) {
-          const params = new URLSearchParams(window.location.search);
-          return params.get(param);
-        }
-      
-        const name = getQueryParam('name') || 'Customer';
-        const thankYouMessage = document.createElement('p');
-        thankYouMessage.textContent = `Thank you, ${name}, for your order!`;
-        document.body.insertBefore(thankYouMessage, document.querySelector('a'));
-      </script>
-      <p class="cart-total-label">Your payment was successfully processed.</p>
-      <p class="cart-total-label">We’ll be in touch soon with your order details.<br>Please check your spam or junk folder just in case. Our emails will come from <strong>shop@donalogaora.com</strong>.
-      </p>        
-      <div style="text-align: center; margin-top: 20px;">      
-        <button type="button" onclick="window.location.href='https://shop.donalogaora.com'" 
-          style="
-              padding: 15px 30px;
-              font-size: 18px;
-              font-family: 'Arial Black', sans-serif;
-              color: red;
-              background-color: white;
-              text-transform: uppercase;
-              text-decoration: none;
-              border-radius: 5px;
-              box-shadow: 5px 5px 10px red;
-              cursor: pointer;
-              transition: background-color 0.3s ease, box-shadow 0.3s ease;
-              display: inline-block;
-          "
-          onmouseover="this.style.backgroundColor='red'; this.style.color='white'; this.style.boxShadow='5px 5px 15px white';"
-          onmouseout="this.style.backgroundColor='white'; this.style.color='red'; this.style.boxShadow='5px 5px 10px red';">
-          Continue Shopping
-        </button>
+    <div class="main-content">
+      <br><br>
+  
+      <div class="cart">
+        <script>
+          function getQueryParam(param) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(param);
+          }
+        
+          const name = getQueryParam('name') || 'Customer';
+          const thankYouMessage = document.createElement('p');
+          thankYouMessage.textContent = `Thank you, ${name}, for your order!`;
+          document.body.insertBefore(thankYouMessage, document.querySelector('a'));
+        </script>
+        <p class="cart-total-label">Your payment was successfully processed.</p>
+        <p class="cart-total-label">We’ll be in touch soon with your order details.<br>Please check your spam or junk folder just in case.<br>Our emails will come from <strong>shop@donalogaora.com</strong>.
+        </p>        
+        <div style="text-align: center; margin-top: 20px;">      
+          <button type="button" onclick="window.location.href='https://shop.donalogaora.com'" 
+            style="
+                padding: 15px 30px;
+                font-size: 18px;
+                font-family: 'Arial Black', sans-serif;
+                color: red;
+                background-color: white;
+                text-transform: uppercase;
+                text-decoration: none;
+                border-radius: 5px;
+                box-shadow: 5px 5px 10px red;
+                cursor: pointer;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                display: inline-block;
+            "
+            onmouseover="this.style.backgroundColor='red'; this.style.color='white'; this.style.boxShadow='5px 5px 15px white';"
+            onmouseout="this.style.backgroundColor='white'; this.style.color='red'; this.style.boxShadow='5px 5px 10px red';">
+            Continue Shopping
+          </button>
+        </div>
       </div>
+      <br><br><br><br><br><br>
+      <tandcfooter>
+         <span class="footer-text">shop.donalogaora.com </span>
+            <a href="https://shop.donalogaora.com/terms-and-conditions" class="footer-tc-text" target="_blank" rel="noopener noreferrer">T&Cs</a><br>
+         <span class="footer-text">© 2025 
+            <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>. All Rights Reserved.
+         </span><br>
+         <span class="footer-text">Designed by 
+            <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
+         </span>
+      </tandcfooter>
     </div>
-    <br><br><br><br><br><br>
-    <tandcfooter>
-       <span class="footer-text">shop.donalogaora.com </span>
-          <a href="https://shop.donalogaora.com/terms-and-conditions" class="footer-tc-text" target="_blank" rel="noopener noreferrer">T&Cs</a><br>
-       <span class="footer-text">© 2025 
-          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>. All Rights Reserved.
-       </span><br>
-       <span class="footer-text">Designed by 
-          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
-       </span>
-    </tandcfooter>
   </body>
 </html>
