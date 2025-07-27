@@ -30,49 +30,26 @@ const productImages = {
   // Add more productId/image arrays here
 };
 
-const productCarousels = {};
+const productCarousels = {}; // Stores interval, index, etc for each product
 
-// Initialize carousel data
-for (const productId in productImages) {
-  productCarousels[productId] = {
-    images: productImages[productId],
-    index: 0,
-    isActive: true
-  };
-}
+function startCarousel(productId, imageElement) {
+  const carousel = productCarousels[productId];
+  if (!carousel || !carousel.isActive) return;
 
-function startCarousel(productId) {
-  const carouselData = productCarousels[productId];
-  if (!carouselData || !carouselData.isActive) return;
+  carousel.interval = setInterval(() => {
+    imageElement.style.transition = "opacity 0.8s";
+    imageElement.style.opacity = 0;
 
-  const carouselDiv = document.querySelector(`.carousel[data-product-id="${productId}"]`);
-  const [imgA, imgB] = carouselDiv.querySelectorAll('img');
-
-  let showingFirst = true;
-
-  carouselData.interval = setInterval(() => {
-    const nextIndex = (carouselData.index + 1) % carouselData.images.length;
-    const nextSrc = carouselData.images[nextIndex];
-
-    const fadeOutImg = showingFirst ? imgA : imgB;
-    const fadeInImg = showingFirst ? imgB : imgA;
-
-    fadeInImg.src = nextSrc;
-    fadeInImg.style.opacity = 0;
-    fadeInImg.onload = () => {
-      fadeInImg.style.zIndex = 2;
-      fadeOutImg.style.zIndex = 1;
-      fadeInImg.style.opacity = 1;
-      fadeOutImg.style.opacity = 0;
-
-      carouselData.index = nextIndex;
-      showingFirst = !showingFirst;
-    };
-
-    fadeInImg.onerror = () => {
-      console.warn(`Failed to load: ${nextSrc}`);
-    };
-  }, 2500); // Adjust speed here
+    setTimeout(() => {
+      carousel.index = (carousel.index + 1) % carousel.images.length;
+      imageElement.onerror = () => {
+        console.warn(`Image failed to load: ${carousel.images[carousel.index]}`);
+        imageElement.src = carousel.images[0]; // fallback
+      };
+      imageElement.src = carousel.images[carousel.index];
+      imageElement.style.opacity = 1;
+    }, 800);
+  }, 2500);
 }
 
 
