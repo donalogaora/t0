@@ -15,7 +15,7 @@ const productImages = {
     '/assets/shop/black_aquadry_soap_cradle.webp',
     '/assets/shop/white_aquadry_soap_cradle.webp',
     '/assets/shop/space_grey_aquadry_soap_cradle.webp',
-    '/assets/shop/blue_aquadry_soap_cradle.webp',
+    '/assets/shop/dark_blue_aquadry_soap_cradle.webp',
     '/assets/shop/red_aquadry_soap_cradle.webp',
     '/assets/shop/orange_aquadry_soap_cradle.webp'
   ],
