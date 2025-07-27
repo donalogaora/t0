@@ -19,6 +19,14 @@ const productImages = {
     '/assets/shop/red_aquadry_soap_cradle.png',
     '/assets/shop/orange_aquadry_soap_cradle.png'
   ]
+  '3A': [
+    '/assets/shop/black_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/white_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/space_grey_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/blue_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/red_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/orange_render_hose-arm_clip_adapter_for_miele.png'
+  ]
   // Add more productId/image arrays here
 };
 
