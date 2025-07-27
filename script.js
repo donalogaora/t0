@@ -32,31 +32,37 @@ const productImages = {
 
 const productCarousels = {}; // Stores interval, index, etc for each product
 
-function startCarousel(productId, imageElement) {
+function startCarousel(productId, containerElement) {
   const carousel = productCarousels[productId];
   if (!carousel || !carousel.isActive) return;
 
+  const [img1, img2] = containerElement.querySelectorAll('img');
+  let showingFirst = true;
+
   carousel.interval = setInterval(() => {
     const nextIndex = (carousel.index + 1) % carousel.images.length;
-    const nextImage = new Image();
-    nextImage.src = carousel.images[nextIndex];
-    nextImage.onload = () => {
-      imageElement.style.transition = "opacity 0.8s ease-in-out";
-      imageElement.style.opacity = 0;
+    const nextSrc = carousel.images[nextIndex];
 
-      setTimeout(() => {
-        carousel.index = nextIndex;
-        imageElement.src = nextImage.src;
-        imageElement.style.opacity = 1;
-      }, 300); // shorter blackout period
+    const fadeOutImg = showingFirst ? img1 : img2;
+    const fadeInImg = showingFirst ? img2 : img1;
 
+    fadeInImg.src = nextSrc;
+    fadeInImg.style.opacity = 0;
+    fadeInImg.onload = () => {
+      fadeInImg.style.zIndex = 2;
+      fadeOutImg.style.zIndex = 1;
+      fadeInImg.style.opacity = 1;
+      fadeOutImg.style.opacity = 0;
+      carousel.index = nextIndex;
+      showingFirst = !showingFirst;
     };
-    nextImage.onerror = () => {
-      console.warn(`Image failed to load: ${carousel.images[nextIndex]}`);
-    };
 
-  }, 3000); // 3 seconds per image = less headache
+    fadeInImg.onerror = () => {
+      console.warn(`Failed to load: ${nextSrc}`);
+    };
+  }, 2500); // Slightly faster
 }
+
 
 // ==============================
 // Initialize Carousels
