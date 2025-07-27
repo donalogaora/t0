@@ -37,7 +37,7 @@ function startCarousel(productId, imageElement) {
   if (!carousel || !carousel.isActive) return;
 
   carousel.interval = setInterval(() => {
-    imageElement.style.transition = "opacity 0.8s";
+    imageElement.style.transition = "opacity 0.3s";
     imageElement.style.opacity = 0;
 
     setTimeout(() => {
@@ -48,7 +48,7 @@ function startCarousel(productId, imageElement) {
       };
       imageElement.src = carousel.images[carousel.index];
       imageElement.style.opacity = 1;
-    }, 800);
+    }, 300);
   }, 2500);
 }
 
