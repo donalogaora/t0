@@ -277,8 +277,8 @@
         font-size: 15px; /* Adjusted size to 20px */
         font-weight: bold !important; /* Force bold text */
         color: #6e6d68; /* Transparent fill color */
-        -webkit-text-stroke: 1px #24252b; /* Outline effect */
-        margin-right: 8px; /* Control spacing between price and button */
+        -webkit-text-stroke: 0.5px #24252b; /* Outline effect */
+        margin-right: 10px; /* Control spacing between price and button */
         text-align: center;
       }
     </style>
@@ -303,7 +303,7 @@
       <h2 class="cart-header">Your Cart</h2>
       <ul id="cart-items"></ul>
       <p class="cart-total-label">Total: €<span>0.00</span></p>
-      <p class="cart-postage-label">Postage will apply during the payment process.,<br>Note: Maximum of 3 items per product category, regardless of color or variation.</p>
+      <p class="cart-postage-label">Postage will apply during the payment process.<br>Note: Maximum of 3 items per product category, regardless of color or variation.</p>
     </div>
     <div id="paypal-button-container"></div>
     <script>
@@ -350,15 +350,15 @@
                 font-weight: bold;
                 font-size: 15px;
                 color: #6e6d68;
-                -webkit-text-stroke: 1px #24252b;
-                margin: 5px 0;
+                -webkit-text-stroke: 0.5px #24252b;
+                margin: 10px 0;
               ">Color: ${item.color}</div>
               <div class="product-description" style="
                 font-weight: bold;
                 font-size: 15px;
                 color: #6e6d68;
-                -webkit-text-stroke: 1px #24252b;
-                margin: 5px 0;
+                -webkit-text-stroke: 0.5px #24252b;
+                margin: 10px 0;
               ">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
             </div>
             <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
@@ -377,12 +377,21 @@
         if (event.target.classList.contains('remove-btn')) {
           const id = event.target.getAttribute('data-id');
           const color = event.target.getAttribute('data-color');
-    
-          cart = cart.filter(item => !(item.id === id && item.color === color));
-          localStorage.setItem('cart', JSON.stringify(cart));
-          renderCart();
+      
+          // Find the item index
+          const index = cart.findIndex(item => item.id === id && item.color === color);
+          if (index > -1) {
+            if (cart[index].qty > 1) {
+              cart[index].qty -= 1;  // Just reduce qty by 1
+            } else {
+              cart.splice(index, 1);  // Remove item if qty reaches 0
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+          }
         }
       });
+
     
       paypal.Buttons({
         createOrder: function(data, actions) {
