@@ -99,7 +99,7 @@ document.querySelectorAll('.circle-container').forEach(container => {
       let imagePath;
 
       if (productId === '1A') {
-        imagePath = `/assets/shop/${selectedColor}universal_phone_stand.webp`;
+        imagePath = `/assets/shop/${selectedColor}_universal_phone_stand.webp`;
       } else if (productId === '2A') {
         imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.webp`;
       } else if (productId === '3A') {
@@ -141,7 +141,7 @@ document.querySelectorAll('.shop-order-button').forEach(orderButton => {
     const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     let imagePath;
     if (productId === '1A') {
-      imagePath = `/assets/shop/${color}universal_phone_stand.webp`;
+      imagePath = `/assets/shop/${color}_universal_phone_stand.webp`;
     } else if (productId === '2A') {
       imagePath = `/assets/shop/${color}_aquadry_soap_cradle.webp`;
     } else if (productId === '3A') {
