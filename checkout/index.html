@@ -18,12 +18,16 @@
         min-height: 100vh;
       }
       body {
-        background-image: url(../assets/main_background.png);
+        background-image: url(../../assets/main_background.png);
         background-repeat: no-repeat;
         background-position: right top;
         background-attachment: fixed;
         background-size: cover;
-        padding: 20px;
+        /*padding: 20px;
+        max-width: 700px;
+        margin: auto;*/
+      }
+      .box-wrapper-700 {
         max-width: 700px;
         margin: auto;
       }
@@ -300,172 +304,174 @@
       </ul>
     </div>
     <br><br>
-    <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
-    <div class="cart">
-      <h2 class="cart-header">Your Cart</h2>
-      <ul 
-        id="cart-items" 
-        class="product-description" 
-        style="
-          font-weight: bold;
-          font-size: 18px;
-          color: #6e6d68;
-          -webkit-text-stroke: 1px #24252b;
-          margin: 10px 0;
-        "
-      ></ul>
-      <p class="cart-total-label">Total: €<span>0.00</span></p>
-      <p class="cart-postage-label">
-        Note: Maximum of 3 items per product category, regardless of color or variation.<br><br>Postage will be calculated during the payment process. It is based on product type and may be higher than expected; however, any unused postage costs will be refunded shortly.
-      </p>
-    </div>
-    <div id="paypal-button-container"></div>
-    <script>
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const BACKEND_URL = 'https://shop-api.donalogaora.com';
-    
-      async function fetchPostage(subtotal) {
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subtotal })
-          });
-          const data = await response.json();
-          return data.postage ?? 0;
-        } catch (err) {
-          console.error('Postage fetch failed', err);
-          return 0;
-        }
-      }
-    
-      async function renderCart() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        const totalEl = document.querySelector('.cart-total-label span');
-    
-        if (!cartItemsContainer) return;
-    
-        if (cart.length === 0) {
-          cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
-          totalEl.textContent = '0.00';
-          return;
-        }
-    
-        cartItemsContainer.innerHTML = '';
-        let subtotal = 0;
-    
-        cart.forEach(item => {
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
-            <div class="item-details">
-              <div class="product-description-bold">${item.name}</div>
-              <div class="product-description" style="
-                font-weight: bold;
-                font-size: 15px;
-                color: #6e6d68;
-                -webkit-text-stroke: 0.7px #24252b;
-                margin: 10px 0;
-              ">Colour: ${item.color}</div>
-              <div class="product-description" style="
-                font-weight: bold;
-                font-size: 15px;
-                color: #6e6d68;
-                -webkit-text-stroke: 0.7px #24252b;
-                margin: 10px 0;
-              ">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
-            </div>
-            <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
-          `;
-          cartItemsContainer.appendChild(li);
-          subtotal += item.price * item.qty;
-        });
-    
-        const postage = await fetchPostage(subtotal);
-        const total = subtotal + postage;
-  
-        totalEl.textContent = total.toFixed(2);
-      }
-    
-      document.getElementById('cart-items').addEventListener('click', (event) => {
-        if (event.target.classList.contains('remove-btn')) {
-          const id = event.target.getAttribute('data-id');
-          const color = event.target.getAttribute('data-color');
+    <div class="box-wrapper-700">
+      <script src="https://www.paypal.com/sdk/js?client-id=AYyHjVONn6BNCkOwITWnMz4_u636NWpdMkQgLe1ZbmlHGGIhEjXBZfzDDNzs8Ee_qa3I-vAPuWAJSC-l&currency=EUR"></script>
+      <div class="cart">
+        <h2 class="cart-header">Your Cart</h2>
+        <ul 
+          id="cart-items" 
+          class="product-description" 
+          style="
+            font-weight: bold;
+            font-size: 18px;
+            color: #6e6d68;
+            -webkit-text-stroke: 1px #24252b;
+            margin: 10px 0;
+          "
+        ></ul>
+        <p class="cart-total-label">Total: €<span>0.00</span></p>
+        <p class="cart-postage-label">
+          Note: Maximum of 3 items per product category, regardless of color or variation.<br><br>Postage will be calculated during the payment process. It is based on product type and may be higher than expected; however, any unused postage costs will be refunded shortly.
+        </p>
+      </div>
+      <div id="paypal-button-container"></div>
+      <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const BACKEND_URL = 'https://shop-api.donalogaora.com';
       
-          // Find the item index
-          const index = cart.findIndex(item => item.id === id && item.color === color);
-          if (index > -1) {
-            if (cart[index].qty > 1) {
-              cart[index].qty -= 1;  // Just reduce qty by 1
-            } else {
-              cart.splice(index, 1);  // Remove item if qty reaches 0
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
+        async function fetchPostage(subtotal) {
+          try {
+            const response = await fetch(`${BACKEND_URL}/api/calculate-postage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ subtotal })
+            });
+            const data = await response.json();
+            return data.postage ?? 0;
+          } catch (err) {
+            console.error('Postage fetch failed', err);
+            return 0;
           }
         }
-      });
-
-    
-      paypal.Buttons({
-        createOrder: function(data, actions) {
-          const orderItems = cart.map(item => ({
-            productId: item.id,
-            quantity: item.qty
-          }));
-    
-          return fetch(`${BACKEND_URL}/api/create-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: orderItems })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.id) throw new Error('No order ID from backend');
-            return data.id;
+      
+        async function renderCart() {
+          const cartItemsContainer = document.getElementById('cart-items');
+          const totalEl = document.querySelector('.cart-total-label span');
+      
+          if (!cartItemsContainer) return;
+      
+          if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p class="empty-message">Your cart is empty.</p>';
+            totalEl.textContent = '0.00';
+            return;
+          }
+      
+          cartItemsContainer.innerHTML = '';
+          let subtotal = 0;
+      
+          cart.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <img src="${item.image || ''}" alt="${item.name} - ${item.color}">
+              <div class="item-details">
+                <div class="product-description-bold">${item.name}</div>
+                <div class="product-description" style="
+                  font-weight: bold;
+                  font-size: 15px;
+                  color: #6e6d68;
+                  -webkit-text-stroke: 0.7px #24252b;
+                  margin: 10px 0;
+                ">Colour: ${item.color}</div>
+                <div class="product-description" style="
+                  font-weight: bold;
+                  font-size: 15px;
+                  color: #6e6d68;
+                  -webkit-text-stroke: 0.7px #24252b;
+                  margin: 10px 0;
+                ">Price: €${item.price.toFixed(2)} x ${item.qty}</div>
+              </div>
+              <button class="remove-btn" data-id="${item.id}" data-color="${item.color}">Remove</button>
+            `;
+            cartItemsContainer.appendChild(li);
+            subtotal += item.price * item.qty;
           });
-        },
+      
+          const postage = await fetchPostage(subtotal);
+          const total = subtotal + postage;
     
-        onApprove: function(data) {
-          return fetch(`${BACKEND_URL}/api/capture-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId: data.orderID })
-          })
-          .then(res => res.json())
-          .then(details => {
-            if (details.status === 'COMPLETED') {
-              alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
-              localStorage.removeItem('cart');
-              window.location.href = `thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
-            } else {
-              alert('Payment not completed');
-            }
-          })
-          .catch(err => {
-            console.error(err);
-            alert('Payment failed. Please try again.');
-          });
-        },
-    
-        onError: function(err) {
-          console.error('PayPal error', err);
-          alert('An error occurred with PayPal.');
+          totalEl.textContent = total.toFixed(2);
         }
-      }).render('#paypal-button-container');
-    
-      renderCart();
-    </script>
-    <br><br><br><br><br><br>
-    <tandcfooter>
-       <span class="footer-text">shop.donalogaora.com </span>
-          <a href="https://shop.donalogaora.com/terms-and-conditions" class="footer-tc-text" target="_blank" rel="noopener noreferrer">T&Cs</a><br>
-       <span class="footer-text">© 2025 
-          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>. All Rights Reserved.
-       </span><br>
-       <span class="footer-text">Designed by 
-          <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
-       </span>
-    </tandcfooter>
+      
+        document.getElementById('cart-items').addEventListener('click', (event) => {
+          if (event.target.classList.contains('remove-btn')) {
+            const id = event.target.getAttribute('data-id');
+            const color = event.target.getAttribute('data-color');
+        
+            // Find the item index
+            const index = cart.findIndex(item => item.id === id && item.color === color);
+            if (index > -1) {
+              if (cart[index].qty > 1) {
+                cart[index].qty -= 1;  // Just reduce qty by 1
+              } else {
+                cart.splice(index, 1);  // Remove item if qty reaches 0
+              }
+              localStorage.setItem('cart', JSON.stringify(cart));
+              renderCart();
+            }
+          }
+        });
+  
+      
+        paypal.Buttons({
+          createOrder: function(data, actions) {
+            const orderItems = cart.map(item => ({
+              productId: item.id,
+              quantity: item.qty
+            }));
+      
+            return fetch(`${BACKEND_URL}/api/create-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: orderItems })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (!data.id) throw new Error('No order ID from backend');
+              return data.id;
+            });
+          },
+      
+          onApprove: function(data) {
+            return fetch(`${BACKEND_URL}/api/capture-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId: data.orderID })
+            })
+            .then(res => res.json())
+            .then(details => {
+              if (details.status === 'COMPLETED') {
+                alert(`Thank you, ${details.payer.name.given_name}! Your order is confirmed.`);
+                localStorage.removeItem('cart');
+                window.location.href = `thank-you/index.html?name=${encodeURIComponent(details.payer.name.given_name)}`;
+              } else {
+                alert('Payment not completed');
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              alert('Payment failed. Please try again.');
+            });
+          },
+      
+          onError: function(err) {
+            console.error('PayPal error', err);
+            alert('An error occurred with PayPal.');
+          }
+        }).render('#paypal-button-container');
+      
+        renderCart();
+      </script>
+      <br><br><br><br><br><br>
+      <tandcfooter>
+         <span class="footer-text">shop.donalogaora.com </span>
+            <a href="https://shop.donalogaora.com/terms-and-conditions" class="footer-tc-text" target="_blank" rel="noopener noreferrer">T&Cs</a><br>
+         <span class="footer-text">© 2025 
+            <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>. All Rights Reserved.
+         </span><br>
+         <span class="footer-text">Designed by 
+            <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
+         </span>
+      </tandcfooter>
+    </div>
   </body>
 </html>
