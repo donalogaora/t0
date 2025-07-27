@@ -122,11 +122,11 @@ document.querySelectorAll('.circle-container').forEach(container => {
       let imagePath;
 
       if (productId === '1A') {
-        imagePath = `/assets/shop/phonestand_${selectedColor}.webp`;
+        imagePath = `/assets/shop/${selectedColor}universal_phone_stand.webp`;
       } else if (productId === '2A') {
-        imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.png`;
+        imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.webp`;
       } else if (productId === '3A') {
-        imagePath = `/assets/shop/${selectedColor}_render_hose-arm_clip_adapter_for_miele.png`;
+        imagePath = `/assets/shop/${selectedColor}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
       } else {
         // fallback or error
       }
@@ -164,11 +164,11 @@ document.querySelectorAll('.shop-order-button').forEach(orderButton => {
     const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     let imagePath;
     if (productId === '1A') {
-      imagePath = `/assets/shop/phonestand_${color}.webp`;
+      imagePath = `/assets/shop/${color}universal_phone_stand.webp`;
     } else if (productId === '2A') {
-      imagePath = `/assets/shop/${color}_aquadry_soap_cradle.png`;
+      imagePath = `/assets/shop/${color}_aquadry_soap_cradle.webp`;
     } else if (productId === '3A') {
-      imagePath = `/assets/shop/${color}_render_hose-arm_clip_adapter_for_miele.png`;
+      imagePath = `/assets/shop/${color}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
     } else {
       // fallback or error
     }
