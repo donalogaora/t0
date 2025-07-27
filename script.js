@@ -30,6 +30,17 @@ const productImages = {
   // Add more productId/image arrays here
 };
 
+const productCarousels = {};
+
+// Initialize carousel data
+for (const productId in productImages) {
+  productCarousels[productId] = {
+    images: productImages[productId],
+    index: 0,
+    isActive: true
+  };
+}
+
 function startCarousel(productId) {
   const carouselData = productCarousels[productId];
   if (!carouselData || !carouselData.isActive) return;
