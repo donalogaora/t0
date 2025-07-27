@@ -30,21 +30,21 @@ const productImages = {
   // Add more productId/image arrays here
 };
 
-const productCarousels = {}; // Stores interval, index, etc for each product
+function startCarousel(productId) {
+  const carouselData = productCarousels[productId];
+  if (!carouselData || !carouselData.isActive) return;
 
-function startCarousel(productId, containerElement) {
-  const carousel = productCarousels[productId];
-  if (!carousel || !carousel.isActive) return;
+  const carouselDiv = document.querySelector(`.carousel[data-product-id="${productId}"]`);
+  const [imgA, imgB] = carouselDiv.querySelectorAll('img');
 
-  const [img1, img2] = containerElement.querySelectorAll('img');
   let showingFirst = true;
 
-  carousel.interval = setInterval(() => {
-    const nextIndex = (carousel.index + 1) % carousel.images.length;
-    const nextSrc = carousel.images[nextIndex];
+  carouselData.interval = setInterval(() => {
+    const nextIndex = (carouselData.index + 1) % carouselData.images.length;
+    const nextSrc = carouselData.images[nextIndex];
 
-    const fadeOutImg = showingFirst ? img1 : img2;
-    const fadeInImg = showingFirst ? img2 : img1;
+    const fadeOutImg = showingFirst ? imgA : imgB;
+    const fadeInImg = showingFirst ? imgB : imgA;
 
     fadeInImg.src = nextSrc;
     fadeInImg.style.opacity = 0;
@@ -53,14 +53,15 @@ function startCarousel(productId, containerElement) {
       fadeOutImg.style.zIndex = 1;
       fadeInImg.style.opacity = 1;
       fadeOutImg.style.opacity = 0;
-      carousel.index = nextIndex;
+
+      carouselData.index = nextIndex;
       showingFirst = !showingFirst;
     };
 
     fadeInImg.onerror = () => {
       console.warn(`Failed to load: ${nextSrc}`);
     };
-  }, 2500); // Slightly faster
+  }, 2500); // Adjust speed here
 }
 
 
