@@ -278,27 +278,6 @@
         text-align: center;
       }
     </style>
-    <!--<style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        margin: 50px auto;
-        max-width: 600px;
-      }
-      h1 {
-        color: #2c7a7b;
-      }
-      p {
-        font-size: 1.2rem;
-      }
-      a {
-        display: inline-block;
-        margin-top: 20px;
-        text-decoration: none;
-        color: #3182ce;
-        font-weight: bold;
-      }
-    </style>-->
   </head>
   <body>
     <div class="nav-wrapper">
@@ -330,26 +309,28 @@
       </script>
       <p class="cart-total-label">Your payment was successfully processed.</p>
       <p class="cart-total-label">We’ll be in touch soon with your order details.<br>Please check your spam or junk folder just in case. Our emails will come from <strong>shop@donalogaora.com</strong>.
-      </p>
-      <button type="button" onclick="window.location.href='https://shop.donalogaora.com'" 
-        style="
-            padding: 15px 30px;
-            font-size: 18px;
-            font-family: 'Arial Black', sans-serif;
-            color: red;
-            background-color: white;
-            text-transform: uppercase;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 5px 5px 10px red;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            display: inline-block;
-        "
-        onmouseover="this.style.backgroundColor='red'; this.style.color='white'; this.style.boxShadow='5px 5px 15px white';"
-        onmouseout="this.style.backgroundColor='white'; this.style.color='red'; this.style.boxShadow='5px 5px 10px red';">
-        Continue Shopping
-      </button>
+      </p>        
+      <div style="text-align: center; margin-top: 20px;">      
+        <button type="button" onclick="window.location.href='https://shop.donalogaora.com'" 
+          style="
+              padding: 15px 30px;
+              font-size: 18px;
+              font-family: 'Arial Black', sans-serif;
+              color: red;
+              background-color: white;
+              text-transform: uppercase;
+              text-decoration: none;
+              border-radius: 5px;
+              box-shadow: 5px 5px 10px red;
+              cursor: pointer;
+              transition: background-color 0.3s ease, box-shadow 0.3s ease;
+              display: inline-block;
+          "
+          onmouseover="this.style.backgroundColor='red'; this.style.color='white'; this.style.boxShadow='5px 5px 15px white';"
+          onmouseout="this.style.backgroundColor='white'; this.style.color='red'; this.style.boxShadow='5px 5px 10px red';">
+          Continue Shopping
+        </button>
+      </div>
     </div>
     <br><br><br><br><br><br>
     <tandcfooter>
@@ -362,23 +343,5 @@
           <a href="https://www.github.com/donalogaora" class="designer" target="_blank">Dónal Ó Gaora</a>
        </span>
     </tandcfooter>
-    <!--<script>
-      function getQueryParam(param) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(param);
-      }
-    
-      const name = getQueryParam('name') || 'Customer';
-      const thankYouMessage = document.createElement('p');
-      thankYouMessage.textContent = `Thank you, ${name}, for your order!`;
-      document.body.insertBefore(thankYouMessage, document.querySelector('a'));
-    </script>
-    
-    <p>Your payment was successfully processed.</p>
-    <p>
-      We’ll be in touch soon with your order details.<br>
-      Please check your spam or junk folder just in case. Our emails will come from <strong>shop@donalogaora.com</strong>.
-    </p>
-    <a href="https://shop.donalogaora.com">Continue Shopping →</a>-->
   </body>
 </html>
