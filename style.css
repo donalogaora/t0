@@ -651,3 +651,15 @@ colour-table {
   opacity: 1;
   z-index: 1;
 }
+
+/*cart-button sticky*/
+#sticky-cart-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+#sticky-cart-container.hidden {
+  display: none;
+}
