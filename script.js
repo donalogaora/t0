@@ -4,28 +4,28 @@
 
 const productImages = {
   '1A': [
-    '/assets/shop/phonestand_black.webp',
-    '/assets/shop/phonestand_white.webp',
-    '/assets/shop/phonestand_space_grey.webp',
-    '/assets/shop/phonestand_dark_blue.webp',
-    '/assets/shop/phonestand_red.webp',
-    '/assets/shop/phonestand_orange.webp'
+    '/assets/shop/black_universal_phone_stand.webp',
+    '/assets/shop/white_universal_phone_stand.webp',
+    '/assets/shop/space_grey_universal_phone_stand.webp',
+    '/assets/shop/dark_blue_universal_phone_stand.webp',
+    '/assets/shop/red_universal_phone_stand.webp',
+    '/assets/shop/orange_universal_phone_stand.webp'
   ],
   '2A': [
-    '/assets/shop/black_aquadry_soap_cradle.png',
-    '/assets/shop/white_aquadry_soap_cradle.png',
-    '/assets/shop/space_grey_aquadry_soap_cradle.png',
-    '/assets/shop/blue_aquadry_soap_cradle.png',
-    '/assets/shop/red_aquadry_soap_cradle.png',
-    '/assets/shop/orange_aquadry_soap_cradle.png'
+    '/assets/shop/black_aquadry_soap_cradle.webp',
+    '/assets/shop/white_aquadry_soap_cradle.webp',
+    '/assets/shop/space_grey_aquadry_soap_cradle.webp',
+    '/assets/shop/blue_aquadry_soap_cradle.webp',
+    '/assets/shop/red_aquadry_soap_cradle.webp',
+    '/assets/shop/orange_aquadry_soap_cradle.webp'
   ],
   '3A': [
-    '/assets/shop/black_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/white_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/space_grey_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/dark_blue_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/red_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/orange_render_hose-arm_clip_adapter_for_miele.png'
+    '/assets/shop/black_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/white_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/space_grey_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/dark_blue_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/red_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/orange_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp'
   ]
   // Add more productId/image arrays here
 };
