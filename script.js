@@ -37,19 +37,25 @@ function startCarousel(productId, imageElement) {
   if (!carousel || !carousel.isActive) return;
 
   carousel.interval = setInterval(() => {
-    imageElement.style.transition = "opacity 0.5s";
-    imageElement.style.opacity = 0;
+    const nextIndex = (carousel.index + 1) % carousel.images.length;
+    const nextImage = new Image();
+    nextImage.src = carousel.images[nextIndex];
+    nextImage.onload = () => {
+      imageElement.style.transition = "opacity 0.8s ease-in-out";
+      imageElement.style.opacity = 0;
 
-    setTimeout(() => {
-      carousel.index = (carousel.index + 1) % carousel.images.length;
-      imageElement.onerror = () => {
-        console.warn(`Image failed to load: ${carousel.images[carousel.index]}`);
-        imageElement.src = carousel.images[0]; // fallback
-      };
-      imageElement.src = carousel.images[carousel.index];
-      imageElement.style.opacity = 1;
-    }, 500);
-  }, 1500);
+      setTimeout(() => {
+        carousel.index = nextIndex;
+        imageElement.src = nextImage.src;
+        imageElement.style.opacity = 1;
+      }, 300); // shorter blackout period
+
+    };
+    nextImage.onerror = () => {
+      console.warn(`Image failed to load: ${carousel.images[nextIndex]}`);
+    };
+
+  }, 3000); // 3 seconds per image = less headache
 }
 
 // ==============================
