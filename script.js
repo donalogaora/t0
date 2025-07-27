@@ -23,7 +23,7 @@ const productImages = {
     '/assets/shop/black_render_hose-arm_clip_adapter_for_miele.png',
     '/assets/shop/white_render_hose-arm_clip_adapter_for_miele.png',
     '/assets/shop/space_grey_render_hose-arm_clip_adapter_for_miele.png',
-    '/assets/shop/blue_render_hose-arm_clip_adapter_for_miele.png',
+    '/assets/shop/dark_blue_render_hose-arm_clip_adapter_for_miele.png',
     '/assets/shop/red_render_hose-arm_clip_adapter_for_miele.png',
     '/assets/shop/orange_render_hose-arm_clip_adapter_for_miele.png'
   ]
@@ -141,8 +141,12 @@ document.querySelectorAll('.shop-order-button').forEach(orderButton => {
     let imagePath;
     if (productId === '1A') {
       imagePath = `/assets/shop/phonestand_${color}.webp`;
-    } else {
+    } else if (productId === '2A') {
       imagePath = `/assets/shop/${color}_aquadry_soap_cradle.png`;
+    } else if (productId === '3A') {
+      imagePath = `/assets/shop/${color}_render_hose-arm_clip_adapter_for_miele.png`;
+    } else {
+      // fallback or error
     }
 
     const cartItem = {
