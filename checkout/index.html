@@ -55,7 +55,7 @@
       }
       .remove-btn {
         background: #c62828;
-        color: white;
+        color: white; !important;
         border: none;
         padding: 6px 10px;
         border-radius: 4px;
@@ -63,6 +63,8 @@
         font-size: 12px;
         margin-left: 12px;
         height: 32px;
+        -webkit-text-stroke: 0; /* REMOVE any stroke */
+        text-stroke: 0; 
       }
       .empty-message {
         text-align: center;
