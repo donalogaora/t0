@@ -185,15 +185,9 @@
         padding: 20px;
       }
       /* Ensure all nav items use consistent layout */
-      .nav-wrapper {
-        width: 100vw; /* Full viewport width */
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px 20px; /* Optional: space from edges */
-        box-sizing: border-box;
-      }
       .nav-list {
         display: flex;
+        flex-direction: row-reverse;
         list-style: none;
         padding: 0;
         margin: 0;
@@ -293,15 +287,15 @@
         margin-right: 10px; /* Control spacing between price and button */
         text-align: center;
       }
-      .clearfix::after {
-        content: "";
-        clear: both;
-        display: table;
+      .clearfix {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px;
       }
     </style>
   </head>
   <body>
-    <div class="clearfix">
+    <div class="nav-wrapper">
       <ul class="nav-list">
         <li class="nav-item">
           <a href="https://shop.donalogaora.com/checkout/thank-you" class="page-button">Thank You</a>
