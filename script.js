@@ -99,8 +99,12 @@ document.querySelectorAll('.circle-container').forEach(container => {
 
       if (productId === '1A') {
         imagePath = `/assets/shop/phonestand_${selectedColor}.webp`;
-      } else {
+      } else if (productId === '2A') {
         imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.png`;
+      } else if (productId === '3A') {
+        imagePath = `/assets/shop/${selectedColor}_render_hose-arm_clip_adapter_for_miele.png`;
+      } else {
+        // fallback or error
       }
 
       imageElement.src = imagePath;
