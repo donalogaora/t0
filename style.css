@@ -475,20 +475,31 @@ colour-table {
     background-color: #5d5d5d; /* Button hover color */
 }
 
-.circle-container {
-    display: flex;
-    justify-content: space-between; /* Space out the circles evenly */
-    width: 100%; /* Make sure it takes the full width */
-    padding: 10px; /* Add some padding to prevent the circles from touching edges */
-}
-
-.circle, .soap-circle {
+.soap-circle {
     width: 50px; /* Set the size of the circle */
     height: 50px; /* Set the size of the circle */
     border-radius: 50%; /* Make them circular */
     border: 2px solid #24252b; /* Border for unselected circles */
     transition: border-color 0.3s; /* Smooth transition on hover/selection */
     cursor: pointer; /* Make the cursor pointer when hovering */
+}
+
+.circle-container {
+  display: flex;
+  flex-wrap: wrap;             /* Allow wrapping to new lines */
+  gap: 12px;                   /* Spacing between circles */
+  justify-content: center;     /* Center the rows */
+  padding: 10px;
+}
+
+.circle {
+  flex: 0 0 calc((100% / 7) - 12px);  /* Max 7 per row, subtract gap */
+  max-width: 50px;                     /* Prevent circles from getting too big */
+  aspect-ratio: 1 / 1;                 /* Keep circle shape */
+  border-radius: 50%;
+  border: 2px solid #24252b;
+  cursor: pointer;
+  transition: border-color 0.3s;
 }
 
 /* Remove the hover effect */
