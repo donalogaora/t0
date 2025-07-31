@@ -492,6 +492,11 @@ colour-table {
     cursor: pointer; /* Make the cursor pointer on hover */
 }
 
+.circle-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
 /* Remove the hover effect */
 /*.circle:hover {
     border-color: inherit; /* No change in border color on hover */
