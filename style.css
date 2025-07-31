@@ -485,28 +485,42 @@ colour-table {
 }
 
 .circle-container {
-    display: flex;
-    flex-wrap: wrap;              /* allow wrapping */
-    width: 100%;
-    padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;  /* Align first rows left */
+  width: 100%;
+  padding: 10px;
+  gap: 10px;                    /* Space between circles */
 }
 
 .circle {
-    flex: 0 0 calc(100% / 7);    /* each circle container takes 1/7th of width */
-    display: flex;                /* flex to center the circle inside */
-    justify-content: center;      /* center horizontally */
-    align-items: center;          /* center vertically */
-    margin-bottom: 10px;          /* vertical spacing between rows */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #24252b;
+  cursor: pointer;
+  flex: 0 0 50px;               /* Fixed size */
 }
 
-.circle > div {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid #24252b;
-    cursor: pointer;
-    transition: border-color 0.3s;
+/* Wrap every 6 circles to next line using a container trick */
+.circle-container > .circle:nth-child(6n + 1) {
+  margin-left: 0;
 }
+
+/* Center last row if it has fewer than 6 circles */
+/* We use :nth-last-child selector to detect last row and center it */
+.circle-container::after {
+  content: "";
+  flex-grow: 999999999; /* Push circles to left except last row */
+}
+
+.circle-container > .circle:nth-last-child(-n + 6) {
+  /* Target last up to 6 circles */
+  margin-left: auto;
+  margin-right: auto;
+  flex-grow: 0;
+}
+
 
 /* Remove the hover effect */
 /*.circle:hover {
