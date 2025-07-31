@@ -493,8 +493,10 @@ colour-table {
 }
 
 .circle-break {
-  flex-basis: 100%;
-  height: 0;
+  flex-basis: 100%;             /* Take full row */
+  height: 0;                    /* No vertical space */
+  margin: 0;                    /* No unintended spacing */
+  padding: 0;
 }
 
 /* Remove the hover effect */
