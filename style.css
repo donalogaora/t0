@@ -475,52 +475,21 @@ colour-table {
     background-color: #5d5d5d; /* Button hover color */
 }
 
-.circle-container {
-  display: flex;
-  flex-wrap: wrap;              /* wrap after max 6 */
-  justify-content: flex-start;  /* default left align */
-  width: 100%;
-  padding: 10px;
-  gap: 10px;                   /* spacing between circles */
+.circle-container { 
+    display: flex;
+    justify-content: space-evenly; /* Space out the circles evenly */
+    width: 100%; /* Full width of container */
+    padding: 10px; /* Add padding */
 }
 
-.circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 2px solid #24252b;
-  transition: border-color 0.3s;
-  cursor: pointer;
-  flex: 0 0 50px;              /* fixed size, no grow/shrink */
-}
-
-/* This is the trick: after every 6th item, force break */
-.circle:nth-child(6n) {
-  margin-right: 0;             /* optional, ensure no right margin on 6th */
-}
-
-/* Center last row if incomplete */
-/* We use JS to count circles and toggle a class on container if last row incomplete */
-/* But if no JS, here is a CSS-only trick using :nth-last-child to target last up to 6 items */
-
-.circle-container > .circle:nth-last-child(-n + 6) {
-  /* For these last up to 6 circles */
-  /* Trick: add flex-grow so they spread evenly */
-  flex-grow: 1;
-}
-
-/* But for rows with 6 items or more, they keep fixed size */
-.circle-container > .circle:nth-child(-n + 6) {
-  flex-grow: 0;
-}
-
-.soap-circle {
+/* Circles for Second Box */
+.circle { 
     width: 50px; /* Set the size of the circle */
     height: 50px; /* Set the size of the circle */
     border-radius: 50%; /* Make them circular */
     border: 2px solid #24252b; /* Border for unselected circles */
     transition: border-color 0.3s; /* Smooth transition on hover/selection */
-    cursor: pointer; /* Make the cursor pointer when hovering */
+    cursor: pointer; /* Make the cursor pointer on hover */
 }
 
 /* Remove the hover effect */
