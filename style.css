@@ -486,20 +486,19 @@ colour-table {
 
 .circle-container {
   display: flex;
-  flex-wrap: wrap;             /* Allow wrapping to new lines */
-  gap: 12px;                   /* Spacing between circles */
-  justify-content: center;     /* Center the rows */
-  padding: 10px;
+  flex-wrap: wrap;        /* Allow wrapping */
+  gap: 10px;              /* Space between circles */
+  justify-content: flex-start;  /* Align circles starting from left */
+  max-width: calc(7 * (60px + 10px)); /* 7 circles x (circle width + gap) */
+  /* Adjust 60px to your circle size, 10px is the gap */
 }
 
 .circle {
-  flex: 0 0 calc((100% / 7) - 12px);  /* Max 7 per row, subtract gap */
-  max-width: 50px;                     /* Prevent circles from getting too big */
-  aspect-ratio: 1 / 1;                 /* Keep circle shape */
+  width: 60px;           /* Fixed size */
+  height: 60px;
   border-radius: 50%;
   border: 2px solid #24252b;
   cursor: pointer;
-  transition: border-color 0.3s;
 }
 
 /* Remove the hover effect */
