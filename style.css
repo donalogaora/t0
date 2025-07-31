@@ -477,11 +477,11 @@ colour-table {
 
 .circle-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* Left align full rows */
+  flex-wrap: wrap;              /* wrap after max 6 */
+  justify-content: flex-start;  /* default left align */
   width: 100%;
   padding: 10px;
-  gap: 10px;
+  gap: 10px;                   /* spacing between circles */
 }
 
 .circle {
@@ -489,27 +489,30 @@ colour-table {
   height: 50px;
   border-radius: 50%;
   border: 2px solid #24252b;
+  transition: border-color 0.3s;
   cursor: pointer;
-  flex: 0 0 50px; /* Fixed size */
+  flex: 0 0 50px;              /* fixed size, no grow/shrink */
 }
 
-/* Insert a flexible spacer to push full rows left */
-.circle-container::after {
-  content: "";
-  flex-grow: 1;
-  flex-basis: 100%;
-  width: 0;
-  height: 0;
+/* This is the trick: after every 6th item, force break */
+.circle:nth-child(6n) {
+  margin-right: 0;             /* optional, ensure no right margin on 6th */
 }
 
-/* Target last row to center it */
+/* Center last row if incomplete */
+/* We use JS to count circles and toggle a class on container if last row incomplete */
+/* But if no JS, here is a CSS-only trick using :nth-last-child to target last up to 6 items */
+
 .circle-container > .circle:nth-last-child(-n + 6) {
-  /* Remove gap to left of these circles */
-  margin-left: auto;
-  margin-right: auto;
+  /* For these last up to 6 circles */
+  /* Trick: add flex-grow so they spread evenly */
+  flex-grow: 1;
+}
+
+/* But for rows with 6 items or more, they keep fixed size */
+.circle-container > .circle:nth-child(-n + 6) {
   flex-grow: 0;
 }
-
 
 .soap-circle {
     width: 50px; /* Set the size of the circle */
