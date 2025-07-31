@@ -475,22 +475,13 @@ colour-table {
     background-color: #5d5d5d; /* Button hover color */
 }
 
-.soap-circle {
-    width: 50px; /* Set the size of the circle */
-    height: 50px; /* Set the size of the circle */
-    border-radius: 50%; /* Make them circular */
-    border: 2px solid #24252b; /* Border for unselected circles */
-    transition: border-color 0.3s; /* Smooth transition on hover/selection */
-    cursor: pointer; /* Make the cursor pointer when hovering */
-}
-
 .circle-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;  /* Align first rows left */
+  justify-content: flex-start; /* Left align full rows */
   width: 100%;
   padding: 10px;
-  gap: 10px;                    /* Space between circles */
+  gap: 10px;
 }
 
 .circle {
@@ -499,28 +490,35 @@ colour-table {
   border-radius: 50%;
   border: 2px solid #24252b;
   cursor: pointer;
-  flex: 0 0 50px;               /* Fixed size */
+  flex: 0 0 50px; /* Fixed size */
 }
 
-/* Wrap every 6 circles to next line using a container trick */
-.circle-container > .circle:nth-child(6n + 1) {
-  margin-left: 0;
-}
-
-/* Center last row if it has fewer than 6 circles */
-/* We use :nth-last-child selector to detect last row and center it */
+/* Insert a flexible spacer to push full rows left */
 .circle-container::after {
   content: "";
-  flex-grow: 999999999; /* Push circles to left except last row */
+  flex-grow: 1;
+  flex-basis: 100%;
+  width: 0;
+  height: 0;
 }
 
+/* Target last row to center it */
 .circle-container > .circle:nth-last-child(-n + 6) {
-  /* Target last up to 6 circles */
+  /* Remove gap to left of these circles */
   margin-left: auto;
   margin-right: auto;
   flex-grow: 0;
 }
 
+
+.soap-circle {
+    width: 50px; /* Set the size of the circle */
+    height: 50px; /* Set the size of the circle */
+    border-radius: 50%; /* Make them circular */
+    border: 2px solid #24252b; /* Border for unselected circles */
+    transition: border-color 0.3s; /* Smooth transition on hover/selection */
+    cursor: pointer; /* Make the cursor pointer when hovering */
+}
 
 /* Remove the hover effect */
 /*.circle:hover {
