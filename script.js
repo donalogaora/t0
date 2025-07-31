@@ -7,27 +7,58 @@ const productImages = {
     '/assets/shop/black_universal_phone_stand.webp',
     '/assets/shop/white_universal_phone_stand.webp',
     '/assets/shop/space_grey_universal_phone_stand.webp',
+    //'/assets/shop/grey_universal_phone_stand.webp',
+    //'/assets/shop/clear_universal_phone_stand.webp',
+    //'/assets/shop/neon_green_universal_phone_stand.webp',
+    //'/assets/shop/sea_green_universal_phone_stand.webp',
     '/assets/shop/dark_blue_universal_phone_stand.webp',
+    '/assets/shop/sky_blue_universal_phone_stand.webp',
+    //'/assets/shop/purple_universal_phone_stand.webp',
+    //'/assets/shop/pink_universal_phone_stand.webp',
     '/assets/shop/red_universal_phone_stand.webp',
     '/assets/shop/orange_universal_phone_stand.webp',
-    '/assets/shop/dark_blue_universal_phone_stand.webp',
-    '/assets/shop/white_universal_phone_stand.webp'
+    //'/assets/shop/yellow_universal_phone_stand.webp',
+    //'/assets/shop/brown_universal_phone_stand.webp',
+    //'/assets/shop/wood_colour_universal_phone_stand.webp',
+    '/assets/shop/beige_universal_phone_stand.webp'
   ],
   '2A': [
     '/assets/shop/black_aquadry_soap_cradle.webp',
     '/assets/shop/white_aquadry_soap_cradle.webp',
     '/assets/shop/space_grey_aquadry_soap_cradle.webp',
+    //'/assets/shop/grey_aquadry_soap_cradle.webp',
+    //'/assets/shop/clear_aquadry_soap_cradle.webp',
+    //'/assets/shop/neon_green_aquadry_soap_cradle.webp',
+    //'/assets/shop/sea_green_aquadry_soap_cradle.webp',
     '/assets/shop/dark_blue_aquadry_soap_cradle.webp',
+    '/assets/shop/sky_blue_aquadry_soap_cradle.webp',
+    //'/assets/shop/purple_aquadry_soap_cradle.webp',
+    //'/assets/shop/pink_aquadry_soap_cradle.webp',
     '/assets/shop/red_aquadry_soap_cradle.webp',
-    '/assets/shop/orange_aquadry_soap_cradle.webp'
+    '/assets/shop/orange_aquadry_soap_cradle.webp',
+    //'/assets/shop/yellow_aquadry_soap_cradle.webp',
+    //'/assets/shop/brown_aquadry_soap_cradle.webp',
+    //'/assets/shop/wood_colour_aquadry_soap_cradle.webp',
+    '/assets/shop/beige_aquadry_soap_cradle.webp'
   ],
   '3A': [
     '/assets/shop/black_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
     '/assets/shop/white_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
     '/assets/shop/space_grey_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/grey_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/clear_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/neon_green_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/sea_green_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
     '/assets/shop/dark_blue_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/sky_blue_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/purple_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/pink_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
     '/assets/shop/red_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/orange_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp'
+    '/assets/shop/orange_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/yellow_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/brown_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    //'/assets/shop/wood_colour_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
+    '/assets/shop/beige_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp'
   ]
   // Add more productId/image arrays here
 };
