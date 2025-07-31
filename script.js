@@ -9,7 +9,9 @@ const productImages = {
     '/assets/shop/space_grey_universal_phone_stand.webp',
     '/assets/shop/dark_blue_universal_phone_stand.webp',
     '/assets/shop/red_universal_phone_stand.webp',
-    '/assets/shop/orange_universal_phone_stand.webp'
+    '/assets/shop/orange_universal_phone_stand.webp',
+    '/assets/shop/dark_blue_universal_phone_stand.webp',
+    '/assets/shop/white_universal_phone_stand.webp'
   ],
   '2A': [
     '/assets/shop/black_aquadry_soap_cradle.webp',
