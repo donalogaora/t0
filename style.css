@@ -650,7 +650,7 @@ colour-table {
 
 .remove-selection-btn {
   background: #c62828;
-  color: white: !important;
+  color: white !important;
   border: none;
   padding: 6px 10px;
   border-radius: 4px;
@@ -660,4 +660,4 @@ colour-table {
   height: 32px;
   -webkit-text-stroke: 0; /* REMOVE any stroke */
   text-stroke: 0; 
-      }
+}
