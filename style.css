@@ -647,3 +647,17 @@ colour-table {
 #sticky-cart-container.hidden {
   display: none;
 }
+
+.remove-selection-btn {
+  background: #c62828;
+  color: white: !important;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 12px;
+  height: 32px;
+  -webkit-text-stroke: 0; /* REMOVE any stroke */
+  text-stroke: 0; 
+      }
