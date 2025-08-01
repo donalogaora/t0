@@ -326,4 +326,28 @@ function fetchAllProducts() {
     .catch(err => console.error("Failed to load products:", err));
 }
 
-document.addEventListener("DOMContentLoaded", fetchAllProducts);
+document.addEventListener("DOMContentLoaded", () => {
+  fetchAllProducts();
+
+  // Attach remove-color-button listeners after DOM fully loaded
+  document.querySelectorAll('.remove-color-button').forEach(removeBtn => {
+    removeBtn.addEventListener('click', () => {
+      const productId = removeBtn.getAttribute('data-product-id');
+      const carousel = productCarousels[productId];
+      if (!carousel) return;
+
+      clearInterval(carousel.interval);
+      carousel.index = 0;
+      carousel.imageElement.src = carousel.images[0];
+      carousel.imageElement.removeAttribute('data-selected-color');
+      carousel.isActive = true;
+      startCarousel(productId, carousel.imageElement);
+
+      document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`)
+        .forEach(c => c.classList.remove('selected'));
+
+      removeBtn.style.display = 'none';
+    });
+  });
+});
+
