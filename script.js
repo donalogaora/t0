@@ -137,7 +137,7 @@ document.querySelectorAll('.circle-container').forEach(container => {
     circle.addEventListener('click', () => {
       const selectedColor = circle.getAttribute('data-color');
       let imagePath;
-
+    
       if (productId === '1A') {
         imagePath = `/assets/shop/${selectedColor}_universal_phone_stand.webp`;
       } else if (productId === '2A') {
@@ -145,18 +145,21 @@ document.querySelectorAll('.circle-container').forEach(container => {
       } else if (productId === '3A') {
         imagePath = `/assets/shop/${selectedColor}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
       }
-
+    
       imageElement.src = imagePath;
-
+    
+      // Save current index so we can resume later
+      carousel.savedIndex = carousel.index;
+    
       clearInterval(carousel.interval);
       carousel.isActive = false;
       imageElement.style.opacity = 1;
       imageElement.setAttribute('data-selected-color', selectedColor);
-
+    
       // Highlight selected circle
       container.closest('.shop-card').querySelectorAll('.circle').forEach(c => c.classList.remove('selected'));
       circle.classList.add('selected');
-
+    
       // Show remove button
       if (removeBtn) removeBtn.style.display = 'inline-block';
     });
@@ -168,19 +171,21 @@ document.querySelectorAll('.remove-selection-btn').forEach(removeBtn => {
     const productId = removeBtn.getAttribute('data-product-id');
     const carousel = productCarousels[productId];
     if (!carousel) return;
-
-    // Reset image and carousel
+  
     clearInterval(carousel.interval);
-    carousel.index = 0;
-    carousel.imageElement.src = carousel.images[0];
+  
+    // Resume from saved index or 0 if none
+    carousel.index = carousel.savedIndex ?? 0;
+  
+    carousel.imageElement.src = carousel.images[carousel.index];
     carousel.imageElement.removeAttribute('data-selected-color');
     carousel.isActive = true;
     startCarousel(productId, carousel.imageElement);
-
+  
     // Deselect all circles
-    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`).forEach(c => c.classList.remove('selected'));
-
-    // Hide remove button
+    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`)
+      .forEach(c => c.classList.remove('selected'));
+  
     removeBtn.style.display = 'none';
   });
 });
