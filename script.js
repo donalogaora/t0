@@ -129,6 +129,10 @@ document.querySelectorAll('.circle-container').forEach(container => {
 
   const imageElement = carousel.imageElement;
 
+  // Get the card that contains this container and its remove button
+  const card = container.closest('.shop-card');
+  const removeBtn = card.querySelector('.remove-color-button');
+
   container.querySelectorAll('.circle').forEach(circle => {
     circle.addEventListener('click', () => {
       const selectedColor = circle.getAttribute('data-color');
@@ -140,8 +144,6 @@ document.querySelectorAll('.circle-container').forEach(container => {
         imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.webp`;
       } else if (productId === '3A') {
         imagePath = `/assets/shop/${selectedColor}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
-      } else {
-        // fallback or error
       }
 
       imageElement.src = imagePath;
@@ -151,9 +153,35 @@ document.querySelectorAll('.circle-container').forEach(container => {
       imageElement.style.opacity = 1;
       imageElement.setAttribute('data-selected-color', selectedColor);
 
-      container.querySelectorAll('.circle').forEach(c => c.classList.remove('selected'));
+      // Highlight selected circle
+      container.closest('.shop-card').querySelectorAll('.circle').forEach(c => c.classList.remove('selected'));
       circle.classList.add('selected');
+
+      // Show remove button
+      if (removeBtn) removeBtn.style.display = 'inline-block';
     });
+  });
+});
+
+document.querySelectorAll('.remove-color-button').forEach(removeBtn => {
+  removeBtn.addEventListener('click', () => {
+    const productId = removeBtn.getAttribute('data-product-id');
+    const carousel = productCarousels[productId];
+    if (!carousel) return;
+
+    // Reset image and carousel
+    clearInterval(carousel.interval);
+    carousel.index = 0;
+    carousel.imageElement.src = carousel.images[0];
+    carousel.imageElement.removeAttribute('data-selected-color');
+    carousel.isActive = true;
+    startCarousel(productId, carousel.imageElement);
+
+    // Deselect all circles
+    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`).forEach(c => c.classList.remove('selected'));
+
+    // Hide remove button
+    removeBtn.style.display = 'none';
   });
 });
 
