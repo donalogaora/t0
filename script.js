@@ -131,7 +131,7 @@ document.querySelectorAll('.circle-container').forEach(container => {
 
   // Get the card that contains this container and its remove button
   const card = container.closest('.shop-card');
-  const removeBtn = card.querySelector('.remove-color-button');
+  const removeBtn = card.querySelector('.remove-selection-btn');
 
   container.querySelectorAll('.circle').forEach(circle => {
     circle.addEventListener('click', () => {
@@ -163,7 +163,7 @@ document.querySelectorAll('.circle-container').forEach(container => {
   });
 });
 
-document.querySelectorAll('.remove-color-button').forEach(removeBtn => {
+document.querySelectorAll('.remove-selection-btn').forEach(removeBtn => {
   removeBtn.addEventListener('click', () => {
     const productId = removeBtn.getAttribute('data-product-id');
     const carousel = productCarousels[productId];
@@ -330,24 +330,31 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchAllProducts();
 
   // Attach remove-color-button listeners after DOM fully loaded
-  document.querySelectorAll('.remove-color-button').forEach(removeBtn => {
-    removeBtn.addEventListener('click', () => {
-      const productId = removeBtn.getAttribute('data-product-id');
-      const carousel = productCarousels[productId];
-      if (!carousel) return;
-
-      clearInterval(carousel.interval);
-      carousel.index = 0;
-      carousel.imageElement.src = carousel.images[0];
-      carousel.imageElement.removeAttribute('data-selected-color');
-      carousel.isActive = true;
-      startCarousel(productId, carousel.imageElement);
-
-      document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`)
-        .forEach(c => c.classList.remove('selected'));
-
-      removeBtn.style.display = 'none';
-    });
+  document.addEventListener('click', function (e) {
+    if (!e.target.matches('.remove-selection-btn')) return;
+  
+    const removeBtn = e.target;
+    const productId = removeBtn.getAttribute('data-product-id');
+    const carousel = productCarousels[productId];
+    if (!carousel) return;
+  
+    console.log("Remove Color clicked for", productId); // ✅ Debug log
+  
+    clearInterval(carousel.interval);
+    carousel.index = 0;
+    carousel.imageElement.src = carousel.images[0];
+    carousel.imageElement.removeAttribute('data-selected-color');
+    carousel.isActive = true;
+    startCarousel(productId, carousel.imageElement);
+  
+    // Deselect all circles
+    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`)
+      .forEach(c => c.classList.remove('selected'));
+  
+    // Hide remove button
+    removeBtn.style.display = 'none';
   });
+
+
 });
 
