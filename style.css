@@ -656,8 +656,9 @@ colour-table {
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  margin-left: 12px;
   height: 32px;
+  margin: 12px auto 0; /* top margin 12px, auto left/right for centering */
+  display: block;      /* make it block-level to apply auto margins */
   -webkit-text-stroke: 0; /* REMOVE any stroke */
-  text-stroke: 0; 
+  text-stroke: 0;
 }
