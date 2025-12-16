@@ -1,358 +1,140 @@
-// ==============================
-// Dynamic Image + Carousel Setup
-// ==============================
+// Shop Stuff
 
-const productImages = {
-  '1A': [
-    '/assets/shop/black_universal_phone_stand.webp',
-    '/assets/shop/white_universal_phone_stand.webp',
-    '/assets/shop/space_grey_universal_phone_stand.webp',
-    //'/assets/shop/grey_universal_phone_stand.webp',
-    //'/assets/shop/clear_universal_phone_stand.webp',
-    '/assets/shop/neon_green_universal_phone_stand.webp',
-    //'/assets/shop/sea_green_universal_phone_stand.webp',
-    '/assets/shop/dark_blue_universal_phone_stand.webp',
-    '/assets/shop/sky_blue_universal_phone_stand.webp',
-    //'/assets/shop/purple_universal_phone_stand.webp',
-    //'/assets/shop/pink_universal_phone_stand.webp',
-    '/assets/shop/red_universal_phone_stand.webp',
-    '/assets/shop/orange_universal_phone_stand.webp',
-    //'/assets/shop/yellow_universal_phone_stand.webp',
-    //'/assets/shop/brown_universal_phone_stand.webp',
-    //'/assets/shop/wood_colour_universal_phone_stand.webp',
-    '/assets/shop/beige_universal_phone_stand.webp'
-  ],
-  '2A': [
-    '/assets/shop/beige_aquadry_soap_cradle.webp',
-    '/assets/shop/black_aquadry_soap_cradle.webp',
-    '/assets/shop/white_aquadry_soap_cradle.webp',
-    '/assets/shop/space_grey_aquadry_soap_cradle.webp',
-    //'/assets/shop/grey_aquadry_soap_cradle.webp',
-    //'/assets/shop/clear_aquadry_soap_cradle.webp',
-    '/assets/shop/neon_green_aquadry_soap_cradle.webp',
-    //'/assets/shop/sea_green_aquadry_soap_cradle.webp',
-    '/assets/shop/dark_blue_aquadry_soap_cradle.webp',
-    '/assets/shop/sky_blue_aquadry_soap_cradle.webp',
-    //'/assets/shop/purple_aquadry_soap_cradle.webp',
-    //'/assets/shop/pink_aquadry_soap_cradle.webp',
-    '/assets/shop/red_aquadry_soap_cradle.webp',
-    '/assets/shop/orange_aquadry_soap_cradle.webp',
-    //'/assets/shop/yellow_aquadry_soap_cradle.webp',
-    //'/assets/shop/brown_aquadry_soap_cradle.webp',
-    //'/assets/shop/wood_colour_aquadry_soap_cradle.webp',
-    '/assets/shop/beige_aquadry_soap_cradle.webp',
-    '/assets/shop/black_aquadry_soap_cradle.webp'
-  ],
-  '3A': [
-    '/assets/shop/orange_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/yellow_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/brown_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/wood_colour_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/beige_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/black_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/white_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //break
-    '/assets/shop/space_grey_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/grey_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/clear_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/neon_green_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/sea_green_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/dark_blue_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/sky_blue_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/purple_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    //'/assets/shop/pink_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp',
-    '/assets/shop/red_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp'
-  ]
-  // Add more productId/image arrays here
+// Phone Stand Image Fade
+const imageElement = document.getElementById('toggle-image');
+const images = [
+    '../assets/shop/black_3d_printed_phone_stand_preview.png',
+    '../assets/shop/white_3d_printed_phone_stand_preview.png',
+    '../assets/shop/space_grey_3d_printed_phone_stand_preview.png',
+    '../assets/shop/blue_3d_printed_phone_stand_preview.png',
+    '../assets/shop/red_3d_printed_phone_stand_preview.png',
+    '../assets/shop/orange_3d_printed_phone_stand_preview.png'
+];
+let currentIndex = 0;
+let carouselInterval; // Store the interval for the image carousel
+let isCarouselActive = true; // Track if the carousel is active
+
+// Function to start the carousel
+function startCarousel() {
+    if (isCarouselActive) {
+        carouselInterval = setInterval(() => {
+            imageElement.style.transition = "opacity 0.5s";  // Smooth fade transition
+            imageElement.style.opacity = 0;
+
+            // After fade-out, change the image source and fade back in
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % images.length;
+                imageElement.src = images[currentIndex];
+                imageElement.style.opacity = 1;
+            }, 50);  // Wait 50ms to fade out image before switching
+        }, 1500); // Change image every 1.5 seconds
+    }
+}
+
+// Start the carousel initially
+startCarousel();
+
+// Define delivery and in-person links for each color
+const paymentLinks = {
+    black: {
+        delivery: "https://www.paypal.com/ncp/payment/G3UNG7URVGTSY",
+        inperson: "https://www.paypal.com/ncp/payment/VHL6BB6NFB5R8"
+    },
+    white: {
+        delivery: "https://www.paypal.com/ncp/payment/YDUY83NNRPYZE",
+        inperson: "https://www.paypal.com/ncp/payment/6XWV77VL9NZXC"
+    },
+    space_grey: {
+        delivery: "https://www.paypal.com/ncp/payment/JG62G4S9BN9F6",
+        inperson: "https://www.paypal.com/ncp/payment/A7J7T4JGBRKT6"
+    },
+    blue: {
+        delivery: "https://www.paypal.com/ncp/payment/TDQ26KXWKTNU8",
+        inperson: "https://www.paypal.com/ncp/payment/433RBJJS2VRQL"
+    },
+    red: {
+        delivery: "https://www.paypal.com/ncp/payment/FX2CVP3MKK78S",
+        inperson: "https://www.paypal.com/ncp/payment/NNH76WM8W9YLU"
+    },
+    orange: {
+        delivery: "https://www.paypal.com/ncp/payment/NZ83GKRKY2XLY",
+        inperson: "https://www.paypal.com/ncp/payment/QXZD8DFPEL6ME"
+    },
+    meili_black: {
+        delivery: "https://www.paypal.com/ncp/payment/CQX94FPFZKPPJ",
+        inperson: "https://www.paypal.com/ncp/payment/CAQPPNUFQ52VE"
+    },
+    meili_white: {
+        delivery: "https://www.paypal.com/ncp/payment/2UH2UQQZLL4UQ",
+        inperson: "https://www.paypal.com/ncp/payment/4FAX3LYRKRQGU"
+    },
+    meili_space_grey: {
+        delivery: "https://www.paypal.com/ncp/payment/DRAWCJUAVMQL4",
+        inperson: "https://www.paypal.com/ncp/payment/3UPT8XM9XURXC"
+    },
+    meili_blue: {
+        delivery: "https://www.paypal.com/ncp/payment/3MFR5SLXXCTHJ",
+        inperson: "https://www.paypal.com/ncp/payment/Y7F698E9N487S"
+    },
+    meili_red: {
+        delivery: "https://www.paypal.com/ncp/payment/VYH6PSMP3KWSL",
+        inperson: "https://www.paypal.com/ncp/payment/YPCWVBLY7PVQ2"
+    },
+    meili_orange: {
+        delivery: "https://www.paypal.com/ncp/payment/MYVK7KLVW5EMQ",
+        inperson: "https://www.paypal.com/ncp/payment/BTGY96QNA4TF8"
+    }
 };
 
-const productCarousels = {}; // Stores interval, index, etc for each product
+// Color selection logic
+let selectedColor = ''; // Store the selected color
 
-function startCarousel(productId, imageElement) {
-  const carousel = productCarousels[productId];
-  if (!carousel || !carousel.isActive) return;
+// Select the color circles
+const colorCircles = document.querySelectorAll('.circle');
+const toggleImage = document.getElementById('toggle-image');
 
-  carousel.interval = setInterval(() => {
-    imageElement.style.transition = "opacity 1.0s";
-    imageElement.style.opacity = 0;
-
-    setTimeout(() => {
-      carousel.index = (carousel.index + 1) % carousel.images.length;
-      imageElement.onerror = () => {
-        console.warn(`Image failed to load: ${carousel.images[carousel.index]}`);
-        imageElement.src = carousel.images[0]; // fallback
-      };
-      imageElement.src = carousel.images[carousel.index];
-      imageElement.style.opacity = 1;
-    }, 1000);
-  }, 3000);
-}
-
-
-// ==============================
-// Initialize Carousels
-// ==============================
-
-document.querySelectorAll('.shop-card').forEach(card => {
-  const productId = card.getAttribute('data-product-id');
-  const imageElement = card.querySelector('.shop-card-image');
-  const images = productImages[productId];
-  // Preload all carousel images for this product
-  images.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-
-
-  if (!images || !imageElement) return;
-
-  productCarousels[productId] = {
-    index: 0,
-    isActive: true,
-    interval: null,
-    images,
-    imageElement
-  };
-
-  imageElement.setAttribute('id', `product-image-${productId}`); // Assign dynamic ID
-  startCarousel(productId, imageElement);
-});
-
-// ==============================
-// Handle Color Selections
-// ==============================
-
-document.querySelectorAll('.circle-container').forEach(container => {
-  const productId = container.getAttribute('data-product-id');
-  const carousel = productCarousels[productId];
-  if (!carousel) return;
-
-  const imageElement = carousel.imageElement;
-
-  // Get the card that contains this container and its remove button
-  const card = container.closest('.shop-card');
-  const removeBtn = card.querySelector('.remove-selection-btn');
-
-  container.querySelectorAll('.circle').forEach(circle => {
+// Loop through each color circle and add a click event listener
+colorCircles.forEach(circle => {
     circle.addEventListener('click', () => {
-      const selectedColor = circle.getAttribute('data-color');
-      let imagePath;
+        // Get the data-color attribute value from the clicked circle
+        selectedColor = circle.getAttribute('data-color');
+        
+        // Update the image source based on the color selected
+        toggleImage.src = `/assets/shop/${selectedColor}_3d_printed_phone_stand_preview.jpg`;  // Static color image
+        
+        // Stop the image carousel once a color is selected
+        clearInterval(carouselInterval);  // Stop the carousel
+        isCarouselActive = false; // Set carousel as inactive
+        imageElement.style.opacity = 1;  // Ensure the image is fully visible immediately
 
-      if (productId === '1A') {
-        imagePath = `/assets/shop/${selectedColor}_universal_phone_stand.webp`;
-      } else if (productId === '2A') {
-        imagePath = `/assets/shop/${selectedColor}_aquadry_soap_cradle.webp`;
-      } else if (productId === '3A') {
-        imagePath = `/assets/shop/${selectedColor}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
-      }
-
-      imageElement.src = imagePath;
-
-      clearInterval(carousel.interval);
-      carousel.isActive = false;
-      imageElement.style.opacity = 1;
-      imageElement.setAttribute('data-selected-color', selectedColor);
-
-      // Highlight selected circle
-      container.closest('.shop-card').querySelectorAll('.circle').forEach(c => c.classList.remove('selected'));
-      circle.classList.add('selected');
-
-      // Show remove button
-      if (removeBtn) removeBtn.style.display = 'inline-block';
+        // Update the selected circle styling
+        colorCircles.forEach(c => c.classList.remove('selected')); // Remove "selected" class from all circles
+        circle.classList.add('selected'); // Add "selected" class to the clicked circle
     });
-  });
 });
 
-document.querySelectorAll('.remove-selection-btn').forEach(removeBtn => {
-  removeBtn.addEventListener('click', () => {
-    const productId = removeBtn.getAttribute('data-product-id');
-    const carousel = productCarousels[productId];
-    if (!carousel) return;
+// Add click event listener to all order buttons
+const orderButtons = document.querySelectorAll('.shop-order-button');
+orderButtons.forEach(orderButton => {
+    orderButton.addEventListener('click', function() {
+        // Get the color from the button's data-color attribute or from the selected circle
+        const colorFromButton = orderButton.getAttribute('data-color');
+        const color = colorFromButton || selectedColor;
 
-    // Reset image and carousel
-    clearInterval(carousel.interval);
-    carousel.index = 0;
-    carousel.imageElement.src = carousel.images[0];
-    carousel.imageElement.removeAttribute('data-selected-color');
-    carousel.isActive = true;
-    startCarousel(productId, carousel.imageElement);
+        if (color) {
+            // Show a confirmation dialog to select delivery or in-person
+            const isDelivery = confirm("Do you want posted delivery? Click 'OK' for posted delivery, 'Cancel' for in-person delivery.");
 
-    // Deselect all circles
-    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`).forEach(c => c.classList.remove('selected'));
+            // Determine the appropriate link based on the user's choice
+            const link = isDelivery 
+                ? paymentLinks[color].delivery 
+                : paymentLinks[color].inperson;
 
-    // Hide remove button
-    removeBtn.style.display = 'none';
-  });
+            // Redirect to the chosen link
+            window.location.href = link;
+        } else {
+            // If no color is selected, prompt the user to select one
+            alert('Please select a color first!');
+        }
+    });
 });
-
-// ==============================
-// Add to Cart (Per Product)
-// ==============================
-
-document.querySelectorAll('.shop-order-button').forEach(orderButton => {
-  orderButton.addEventListener('click', function () {
-    const productId = orderButton.getAttribute('data-product-id');
-    const imageElement = document.querySelector(`#product-image-${productId}`);
-    const color = imageElement?.getAttribute('data-selected-color');
-
-    if (!color) {
-      alert('Please select a color first!');
-      return;
-    }
-
-    const productName = getProductField(productId, 'product_name') || 'Unnamed Product';
-    const price = parseFloat(getProductField(productId, 'price')) || 0;
-    const formattedColor = color.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    let imagePath;
-    if (productId === '1A') {
-      imagePath = `/assets/shop/${color}_universal_phone_stand.webp`;
-    } else if (productId === '2A') {
-      imagePath = `/assets/shop/${color}_aquadry_soap_cradle.webp`;
-    } else if (productId === '3A') {
-      imagePath = `/assets/shop/${color}_securefit_hose-arm_clip_adapter_for_miele_wide_upholstery_nozzle.webp`;
-    } else {
-      // fallback or error
-    }
-
-    const cartItem = {
-      id: productId,
-      name: productName,
-      color: formattedColor,
-      price: price,
-      qty: 1,
-      image: imagePath
-    };
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existingIndex = cart.findIndex(item => item.id === productId && item.color === formattedColor);
-
-    if (existingIndex > -1) {
-      cart[existingIndex].qty += 1;
-    } else {
-      cart.push(cartItem);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartNav();
-    alert(`${formattedColor} ${productName} added to cart!`);
-  });
-});
-
-// ==============================
-// Utility + Misc (Same as Before)
-// ==============================
-
-window.addEventListener("load", function () {
-  const hash = window.location.hash;
-  if (hash) {
-    const element = document.querySelector(hash);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-});
-
-document.querySelectorAll(".soap-order-button").forEach(button => {
-  button.addEventListener("click", () => {
-    window.location.href = "https://shop.donalogaora.com/all-products#aqua-dry-soap-cradle";
-  });
-});
-
-const cartNavItem = document.getElementById('cart-nav-item');
-const cartCountSpan = document.getElementById('cart-count');
-
-function updateCartNav() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-
-  if (totalQty > 0) {
-    cartCountSpan.textContent = totalQty;
-    cartNavItem.style.display = 'list-item';
-  } else {
-    cartNavItem.style.display = 'none';
-  }
-}
-
-updateCartNav();
-document.getElementById('cart-nav-item').classList.remove('hidden');
-document.getElementById('cart-count').textContent = 2;
-
-// ==============================
-// Product Info Fetching
-// ==============================
-
-const DATA_URL = "https://script.google.com/macros/s/AKfycbz8LydxCL8AZclrYOXVbQjCVcWtp3rzAWNct-tI0Sf2ZNz_j7Zu3invgYMoHEMANlVv/exec?all=true";
-const productsData = {};
-
-function normalizeKey(str) {
-  return str.toLowerCase().replace(/\s+/g, "_");
-}
-
-function getProductField(id, field) {
-  const product = productsData[id.toLowerCase()];
-  if (!product) return null;
-  return product[normalizeKey(field)] ?? null;
-}
-
-function updateDomFields() {
-  const elems = document.querySelectorAll("[data-product-id][data-field]");
-  elems.forEach(elem => {
-    const id = elem.getAttribute("data-product-id");
-    const field = elem.getAttribute("data-field");
-    const value = getProductField(id, field);
-    if (value !== null) {
-      elem.textContent = field.toLowerCase() === 'price' ? `€${value}` : value;
-    }
-  });
-}
-
-function fetchAllProducts() {
-  fetch(DATA_URL)
-    .then(res => res.json())
-    .then(flatData => {
-      for (const [flatKey, value] of Object.entries(flatData)) {
-        const [id, ...rest] = flatKey.split("_");
-        const keyRaw = rest.join("_");
-        const key = normalizeKey(keyRaw);
-        const idNormalized = id.toLowerCase();
-
-        if (!productsData[idNormalized]) productsData[idNormalized] = {};
-        productsData[idNormalized][key] = value;
-      }
-
-      console.log("All products loaded:", productsData);
-      updateDomFields();
-    })
-    .catch(err => console.error("Failed to load products:", err));
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetchAllProducts();
-
-  // Attach remove-color-button listeners after DOM fully loaded
-  document.addEventListener('click', function (e) {
-    if (!e.target.matches('.remove-selection-btn')) return;
-  
-    const removeBtn = e.target;
-    const productId = removeBtn.getAttribute('data-product-id');
-    const carousel = productCarousels[productId];
-    if (!carousel) return;
-  
-    console.log("Remove Color clicked for", productId); // ✅ Debug log
-  
-    clearInterval(carousel.interval);
-    carousel.index = 0;
-    carousel.imageElement.src = carousel.images[0];
-    carousel.imageElement.removeAttribute('data-selected-color');
-    carousel.isActive = true;
-    startCarousel(productId, carousel.imageElement);
-  
-    // Deselect all circles
-    document.querySelectorAll(`.circle-container[data-product-id="${productId}"] .circle`)
-      .forEach(c => c.classList.remove('selected'));
-  
-    // Hide remove button
-    removeBtn.style.display = 'none';
-  });
-});
-

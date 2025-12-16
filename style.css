@@ -1,3 +1,4 @@
+/* Base Styles */
 html, body {
   height: 100%;
   width: 100%;
@@ -236,33 +237,16 @@ colour-table {
   /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
 /*}*/
 
-/* Hide elements with the hidden class */
-.hidden {
-  display: none !important;
-}
-
-#cart-nav-item {
-  width: auto;
-}
-
-/* Ensure all nav items use consistent layout */
 .nav-list {
-  display: flex;
-  flex-direction: row-reverse;
-  list-style: none;
-  padding: 0;
+  list-style-type: none;
   margin: 0;
-  gap: 10px;
-  align-items: center;
+  padding: 0 20px;
+  overflow: hidden;
+  text-align: right;
 }
 
 .nav-list li {
   display: inline-block;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
 }
 
 .nav-link, .page-button {
@@ -411,7 +395,6 @@ colour-table {
     -webkit-text-stroke: 1px #24252b; /* Outline effect */
     text-align: center; /* Center the text horizontally */
     margin: 10px 0; /* Space around the title */
-    padding: 0 20px; /* Add space on left and right */
 }
 
 .shop-card-description {
@@ -452,10 +435,11 @@ colour-table {
     font-weight: bold !important; /* Force bold text */
     color: #6e6d68; /* Transparent fill color */
     -webkit-text-stroke: 1px #24252b; /* Outline effect */
+    text-transform: uppercase; /* Uppercase text */
     margin-right: 10px; /* Control spacing between price and button */
 }
 
-.shop-order-button, .soap-order-button {
+.shop-order-button {
     padding: 10px 20px; /* Adjust button padding */
     background-color: #ffcc00; /* Button background color */
     color: #253b80; /* Button text color */
@@ -471,32 +455,20 @@ colour-table {
     background-color: #5d5d5d; /* Button hover color */
 }
 
-.soap-order-button:hover {
-    background-color: #5d5d5d; /* Button hover color */
-}
-
-.circle-container { 
+.circle-container {
     display: flex;
-    justify-content: space-evenly; /* Space out the circles evenly */
-    width: 100%; /* Full width of container */
-    padding: 10px; /* Add padding */
+    justify-content: space-between; /* Space out the circles evenly */
+    width: 100%; /* Make sure it takes the full width */
+    padding: 10px; /* Add some padding to prevent the circles from touching edges */
 }
 
-/* Circles for Second Box */
-.circle { 
+.circle {
     width: 50px; /* Set the size of the circle */
     height: 50px; /* Set the size of the circle */
     border-radius: 50%; /* Make them circular */
     border: 2px solid #24252b; /* Border for unselected circles */
     transition: border-color 0.3s; /* Smooth transition on hover/selection */
-    cursor: pointer; /* Make the cursor pointer on hover */
-}
-
-.circle-break {
-  flex-basis: 100%;             /* Take full row */
-  height: 0;                    /* No vertical space */
-  margin: 0;                    /* No unintended spacing */
-  padding: 0;
+    cursor: pointer; /* Make the cursor pointer when hovering */
 }
 
 /* Remove the hover effect */
@@ -556,7 +528,7 @@ colour-table {
     font-weight: bold; /* Bold text */
     color: #6e6d68; /* Transparent fill color */
     -webkit-text-stroke: 1px #24252b; /* Outline effect */
-    /*text-transform: uppercase;*/ /* Uppercase text */
+    text-transform: uppercase; /* Uppercase text */
     margin-right: 10px; /* Add spacing between price and button */
 }
 
@@ -630,35 +602,8 @@ colour-table {
         width: 90%; /* Take up 90% width on mobile screens */
         height: auto; /* Let height adjust naturally */
     }
-    .circle, soap-circle {
+    .circle {
         width: 40px; /* Slightly smaller circles for mobile */
         height: 40px;
     }
-}
-
-/*cart-button sticky*/
-#sticky-cart-container {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-}
-
-#sticky-cart-container.hidden {
-  display: none;
-}
-
-.remove-selection-btn {
-  background: #c62828;
-  color: white !important;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  height: 32px;
-  margin: 12px auto 0; /* top margin 12px, auto left/right for centering */
-  display: block;      /* make it block-level to apply auto margins */
-  -webkit-text-stroke: 0; /* REMOVE any stroke */
-  text-stroke: 0;
 }
